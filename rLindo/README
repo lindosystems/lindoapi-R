@@ -1,0 +1,4 @@
+# The R Interface to LINDO API, version 13.0.1.
+
+To use this package, LINDO API 13.0 must have been installed and LINDOAPI_HOME environment variable is set up
+to point to its root directory. See INSTALL for installation details.

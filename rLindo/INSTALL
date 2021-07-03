@@ -1,0 +1,72 @@
+# rLindo - The R interface to LINDO API
+
+## Requirements
+
+1. LINDO API 13.0 [(https://www.lindo.com)](https://www.lindo.com/index.php/ls-downloads/try-lindo-api).
+
+2. R software 3.5 or later [(https://cran.r-project.org/index.html)](https://cran.r-project.org/index.html).
+
+3. Rtools (Windows only) [(http://www.cran.r-project.org/doc/manuals/R-admin.html#The-Windows-toolset)](http://www.cran.r-project.org/doc/manuals/R-admin.html#The-Windows-toolset).
+
+
+## Installation for Windows
+
+**NOTE**: Make sure to run the command window as administrator to perform these steps.
+
+1. Make sure environment variable LINDOAPI_HOME points to the installation path of LINDO API. 
+
+        C:> set LINDOAPI_HOME="c:\lindoapi"
+
+2. Navigate to the directory `c:\lindoapi\R`, where the file `rLindo_13.0.tar.gz` is located.
+
+3. Run the following batch script to install the rLindo package.
+
+        C:> install-rlindo.bat
+
+4. Test whether rLindo package has been installed successfully by using the following command in R.
+
+        > library(rLindo)
+
+
+## Installation for Linux and Mac/OSX
+
+**NOTE**: Make sure to login as the 'root' user or use 'sudo' to perform these steps.
+
+1. Set environment variable LINDOAPI_HOME to the installation path of LINDO API. e.g. 
+  
+        $ export LINDOAPI_HOME=/opt/lindoapi
+
+   To have this variable set automatically, add the above line to your `~/.bashrc` file.
+
+2. Navigate to the directory `/opt/lindoapi/R`, where the file `rLindo_13.0.tar.gz` is located.
+
+3. Run the following batch script to install the rLindo package.
+ 
+        $ ./install-rlindo.sh
+
+    For Mac/OSX users, if you get an error message like below: 
+
+        checking for gcc... llvm-gcc-4.2 -arch x86_64 -std=gnu99
+        checking whether the c compiler works...no
+
+    link llvm-gcc-4.2 to your gcc compiler using command:
+
+        $ sudo ln -fs llvm-gcc llvm-gcc-4.2
+
+4. For Mac/OSX users, change the install name of `rLindo.so` using command:
+
+        $ install_name_tool -change @loader_path/liblindo64.13.0.dylib \
+                             ${LINDOAPI_HOME}/bin/osx64x86/liblindo64.13.0.dylib \
+                             ${R_HOME}/library/rLindo/libs/rLindo.so
+
+    **Note**: The above command assumes the system is 64-bit and R_HOME environment variable is 
+    defined. Otherwise, please revise the command accordingly.
+
+5. Test whether rLindo package has been installed successfully by using the following command in R.
+
+        > library(rLindo)
+
+
+
+
+

@@ -1,0 +1,61 @@
+
+  /*
+ * @brief LSgetProgressInfo
+ * @param[in,out] pModel
+ * @param[in,out] nLocation
+ * @param[in,out] nQuery  
+ * @return int An integer error code
+ * @remark ErrorCode = rLSgetProgressInfo(spModel,nLocation,nQuery) 
+ */
+SEXP rcLSgetProgressInfo(SEXP spModel,SEXP snLocation,SEXP snQuery)    
+{
+  DCL_BUF(20);
+  pLSmodel     pModel=NULL;
+  prLSmodel prModel=NULL;
+  
+  int nLocation;
+  int nQuery;
+  
+    
+  SEXP      sModel=spModel;
+  int       *pnErrorCode;
+  SEXP      spnErrorCode = R_NilValue;
+  SEXP      rList = R_NilValue;
+  char      *Names[1] = {"ErrorCode"};
+  SEXP      ListNames = R_NilValue;
+  int       nNumItems = 1;
+  int       nIdx, nProtect = 0;
+  
+
+    
+  // zero-out temp vectors
+  ZERO_BUF(20);
+  INI_ERR_CODE;
+    
+  ibuf[2] = nLocation = Rf_asInteger(snLocation);    
+  ibuf[3] = nQuery = Rf_asInteger(snQuery);   
+
+  CHECK_MODEL_ERROR;    
+  LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
+  
+
+
+  // Get C pointers
+  *pnErrorCode = errorcode = LSgetProgressInfo(pModel
+    ,ibuf[2] //nLocation
+    ,ibuf[3]); //nQuery
+
+
+ErrorReturn:
+  //allocate list
+  SET_UP_LIST;  
+  
+  SET_VECTOR_ELT(rList, 0, spnErrorCode);
+  if (!errorcode) {
+  }    
+  UNPROTECT(nProtect + 2);
+  return rList; 
+  
+}

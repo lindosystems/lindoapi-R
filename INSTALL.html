@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+@charset "utf-8";
+
+/**
+ * markdown.css
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see http://gnu.org/licenses/lgpl.txt.
+ *
+ * @project      Weblog and Open Source Projects of Florian Wolters
+ * @version      GIT: $Id$
+ * @package      xhtml-css
+ * @author       Florian Wolters <florian.wolters.85@googlemail.com>
+ * @copyright    2012 Florian Wolters
+ * @cssdoc       version 1.0-pre
+ * @license      http://gnu.org/licenses/lgpl.txt GNU Lesser General Public License
+ * @link         http://github.com/FlorianWolters/jekyll-bootstrap-theme
+ * @media        all
+ * @valid        true
+ */
+
+body {
+    font-family: Helvetica, Arial, Freesans, clean, sans-serif;
+padding:1em;
+margin:auto;
+max-width:42em;
+background:#fefefe;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
+}
+
+h1 {
+    color: #000000;
+    font-size: 28px;
+}
+
+h2 {
+    border-bottom: 1px solid #CCCCCC;
+    color: #000000;
+    font-size: 24px;
+}
+
+h3 {
+    font-size: 18px;
+}
+
+h4 {
+    font-size: 16px;
+}
+
+h5 {
+    font-size: 14px;
+}
+
+h6 {
+    color: #777777;
+    background-color: inherit;
+    font-size: 14px;
+}
+
+hr {
+    height: 0.2em;
+    border: 0;
+    color: #CCCCCC;
+    background-color: #CCCCCC;
+}
+
+p, blockquote, ul, ol, dl, li, table, pre {
+    margin: 15px 0;
+}
+
+code, pre {
+    border-radius: 3px;
+    background-color: #F8F8F8;
+    color: inherit;
+}
+
+code {
+    border: 1px solid #EAEAEA;
+    margin: 0 2px;
+    padding: 0 5px;
+}
+
+pre {
+    border: 1px solid #CCCCCC;
+    line-height: 1.25em;
+    overflow: auto;
+    padding: 6px 10px;
+}
+
+pre > code {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+a, a:visited {
+    color: #4183C4;
+    background-color: inherit;
+    text-decoration: none;
+}
+
+
+</style>
+</head>
+<body>
+<h1>rLindo - The R interface to LINDO API</h1>
+
+<h2>Requirements</h2>
+
+<ol>
+<li><p>LINDO API 13.0 <a href="https://www.lindo.com/index.php/ls-downloads/try-lindo-api">(https://www.lindo.com)</a>.</p></li>
+<li><p>R software 3.5 or later <a href="https://cran.r-project.org/index.html">(https://cran.r-project.org/index.html)</a>.</p></li>
+<li><p>Rtools (Windows only) <a href="http://www.cran.r-project.org/doc/manuals/R-admin.html#The-Windows-toolset">(http://www.cran.r-project.org/doc/manuals/R-admin.html#The-Windows-toolset)</a>.</p></li>
+</ol>
+
+<h2>Installation for Windows</h2>
+
+<p><strong>NOTE</strong>: Make sure to run the command window as administrator to perform these steps.</p>
+
+<ol>
+<li><p>Make sure environment variable LINDOAPI_HOME points to the installation path of LINDO API. </p>
+
+<pre><code>C:&gt; set LINDOAPI_HOME="c:\lindoapi"
+</code></pre></li>
+<li><p>Navigate to the directory <code>c:\lindoapi\R</code>, where the file <code>rLindo_13.0.tar.gz</code> is located.</p></li>
+<li><p>Run the following batch script to install the rLindo package.</p>
+
+<pre><code>C:&gt; install-rlindo.bat
+</code></pre></li>
+<li><p>Test whether rLindo package has been installed successfully by using the following command in R.</p>
+
+<pre><code>&gt; library(rLindo)
+</code></pre></li>
+</ol>
+
+<h2>Installation for Linux and Mac/OSX</h2>
+
+<p><strong>NOTE</strong>: Make sure to login as the 'root' user or use 'sudo' to perform these steps.</p>
+
+<ol>
+<li><p>Set environment variable LINDOAPI_HOME to the installation path of LINDO API. e.g. </p>
+
+<pre><code>$ export LINDOAPI_HOME=/opt/lindoapi
+</code></pre>
+
+<p>To have this variable set automatically, add the above line to your <code>~/.bashrc</code> file.</p></li>
+<li><p>Navigate to the directory <code>/opt/lindoapi/R</code>, where the file <code>rLindo_13.0.tar.gz</code> is located.</p></li>
+<li><p>Run the following batch script to install the rLindo package.</p>
+
+<pre><code>$ ./install-rlindo.sh
+</code></pre>
+
+<p>For Mac/OSX users, if you get an error message like below: </p>
+
+<pre><code>checking for gcc... llvm-gcc-4.2 -arch x86_64 -std=gnu99
+checking whether the c compiler works...no
+</code></pre>
+
+<p>link llvm-gcc-4.2 to your gcc compiler using command:</p>
+
+<pre><code>$ sudo ln -fs llvm-gcc llvm-gcc-4.2
+</code></pre></li>
+<li><p>For Mac/OSX users, change the install name of <code>rLindo.so</code> using command:</p>
+
+<pre><code>$ install_name_tool -change @loader_path/liblindo64.13.0.dylib \
+                     ${LINDOAPI_HOME}/bin/osx64x86/liblindo64.13.0.dylib \
+                     ${R_HOME}/library/rLindo/libs/rLindo.so
+</code></pre>
+
+<p><strong>Note</strong>: The above command assumes the system is 64-bit and R_HOME environment variable is 
+defined. Otherwise, please revise the command accordingly.</p></li>
+<li><p>Test whether rLindo package has been installed successfully by using the following command in R.</p>
+
+<pre><code>&gt; library(rLindo)
+</code></pre></li>
+</ol>
+</body>
+</html>
+
+
