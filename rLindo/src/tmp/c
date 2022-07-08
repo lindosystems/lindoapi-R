@@ -4,6 +4,7 @@
 > rcLSaddUserDist
 > rcLSbuildStringData
 > rcLScomputeFunction
+> rcLSgetDataType
 > rcLSgetEnvParameter
 > rcLSgetEnvStocParameter
 > rcLSgetHistogram
@@ -11,10 +12,10 @@
 > rcLSgetInstruct
 > rcLSgetKBestMIPSols
 > rcLSgetLicenseInfo
-> rcLSgetMasterModel
 > rcLSgetMIPCallbackInfo
 > rcLSgetMIPSolution
 > rcLSgetMIPSolutionStatus
+> rcLSgetMasterModel
 > rcLSgetModelParameter
 > rcLSgetModelStocParameter
 > rcLSgetNameData
