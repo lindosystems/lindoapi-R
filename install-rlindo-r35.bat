@@ -1,4 +1,4 @@
-@echo off
+@echo off 
 echo.
 echo ---------------------------------------
 echo rLindo Installation script for Win32/64
@@ -6,10 +6,10 @@ echo         Lindo Systems, Inc.
 echo ---------------------------------------
 
 setlocal enabledelayedexpansion
-set RCORE_VER=4.0.0
+set RCORE_VER=3.6.2
 set RCORE_EXE=R-%RCORE_VER%-win.exe
-set RTOOLS_VER=rtools40-x86_64.exe
-set RMIN=4.0
+set RTOOLS_VER=Rtools35.exe
+set RMIN=3.5
 rem ***************************Check whether R is installed***************************
 echo Checking for R...
 :CHECK_R_INSTALLATION
@@ -153,7 +153,7 @@ if not "!R_INSTALLED!"=="true" (
 
 :CHECK_R_PATH
 echo R path : %R_PATH%
-    set "PATH=!R_PATH!\bin;%PATH%"    
+    set "PATH=!R_PATH!\bin;%PATH%"
 
 :CHECK_R_VERSION
 R --version 2>version.txt
@@ -277,20 +277,20 @@ echo RTOOLS path : %RTOOLS_PATH%
 
 rem add RTOOLS_PATH to PATH
 if "!R_ARCHITETURE!" == "64bit" (
-    if not exist !RTOOLS_PATH!\mingw64\bin\gcc.exe (
+    if not exist !RTOOLS_PATH!\mingw_64\bin\gcc.exe (
         echo ERROR: R is 64-bit, but can not find 64-bit gcc compiler. ^
 Please reinstall Rtools, and make sure to check "64 bit toolchain" when installing.
         goto END
     )
-    set "PATH=!RTOOLS_PATH!\bin;!RTOOLS_PATH!\mingw64\bin;!RTOOLS_PATH!\usr\bin;%PATH%"
+    set "PATH=!RTOOLS_PATH!\bin;!RTOOLS_PATH!\mingw_64\bin;%PATH%"
 ) else (
-    if not exist !RTOOLS_PATH!\mingw32\bin\gcc.exe (
+    if not exist !RTOOLS_PATH!\mingw_32\bin\gcc.exe (
         echo ERROR: R is 32-bit, but can not find 32-bit gcc compiler. ^
 Please reinstall Rtools, and make sure to check "32 bit toolchain" when installing.
         
         goto END
     )
-    set "PATH=!RTOOLS_PATH!\bin;!RTOOLS_PATH!\mingw32\bin;!RTOOLS_PATH!\usr\bin;%PATH%"
+    set "PATH=!RTOOLS_PATH!\bin;!RTOOLS_PATH!\mingw_32\bin;%PATH%"
 )
 rem echo %PATH%
 :check for LINDO API

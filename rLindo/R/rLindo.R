@@ -1,7 +1,7 @@
 #rLindo.R
-#The R interface to LINDO API 13.0.
+#The R interface to LINDO API 14.0.
 #This file includes all R interface wrapper functions for LINDO API C functions.
-#Copyright (C) 2020 LINDO Systems.
+#Copyright (C) 2022 LINDO Systems.
 
 
 #************************************************************##
@@ -4060,21 +4060,20 @@ rLSsetFuncalc <- function(spModel,sFunc,sData) {
   return (ans)
 }
 
-rLSsetEnvLogfunc <- function(spEnv,sFunc,sData) {
-  ans <- .Call("rcLSsetEnvLogfunc", PACKAGE = "rLindo"
-        ,spEnv
-        ,sFunc
-        ,sData
+
+rLSdeleteIndConstraints <- function(spModel,nCons,paiCons) {
+  ans <- .Call("rcLSdeleteIndConstraints", PACKAGE = "rLindo"
+        ,spModel
+        ,as.integer(nCons)
+        ,as.integer(paiCons)
   )
   return (ans)
 }
 
-rLSgetProgressInfo <- function(spModel,nLocation,nQuery) {
-
-  ans <- .Call("rcLSgetProgressInfo", PACKAGE = "rLindo"
-        ,spModel
-        ,as.integer(nLocation)
-        ,as.integer(nQuery)
+rLSloadIndData <- function(spModel,nIndicRows,paiIndicRows,paiIndicCols,paiIndicVals) {
+  ans <- .Call("rcLSloadIndData", PACKAGE = "rLindo"        ,spModel
+        ,as.integer(nIndicRows)        ,as.integer(paiIndicRows)        ,as.integer(paiIndicCols)
+        ,as.integer(paiIndicVals)
   )
   return (ans)
 }

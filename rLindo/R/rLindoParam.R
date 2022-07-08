@@ -1,13 +1,13 @@
  #####################################################################
  ##
- ##    LINDO API Version 13.0
- ##    Copyright (c) 2000-2020
+ ##    LINDO API Version 14.0
+ ##    Copyright (c) 2000-2022
  ##
  ##    LINDO Systems, Inc.            312.988.7422
  ##    1415 North Dayton St.          info@lindo.com
  ##    Chicago, IL 60622              http://www.lindo.com
  ##
- ##    $Id: rLindoParam.R 2950 2020-06-06 09:22:43Z mka $
+ ##    $Id: lindo.r 3021 2022-01-25 10:13:57Z mka $
  ##
  #####################################################################/
 
@@ -18,11 +18,11 @@
  #####################################################################/
 
  # Version macros #/
- LS_MAJOR_VER_NUMBER                                          <- 13L
+ LS_MAJOR_VER_NUMBER                                          <- 14L
  LS_MINOR_VER_NUMBER                                          <- 0L
- LS_REV_VER_NUMBER                                            <- 183L
- LS_VER_NUMBER                                                <- 1300L
- LS_BUILD_VER_NUMBER                                          <- 4099L
+ LS_REV_VER_NUMBER                                            <- 147L
+ LS_VER_NUMBER                                                <- 1400L
+ LS_BUILD_VER_NUMBER                                          <- 5099L
 
  LS_MIN                                                       <- +1L
  LS_MAX                                                       <- -1L
@@ -224,6 +224,7 @@
  LS_IPARAM_FIND_SYMMETRY_LEVEL                                <- 1055L
  LS_IPARAM_FIND_SYMMETRY_PRINT_LEVEL                          <- 1056L
  LS_IPARAM_TUNER_PRINT_LEVEL                                  <- 1057L
+ LS_IPARAM_DEFAULT_SEED                                       <- 1058L
 
     # Generic solver parameters (1251 - 1500) #/
  LS_IPARAM_SOLVER_IUSOL                                       <- 1251L
@@ -241,6 +242,7 @@
  LS_IPARAM_SOLVER_PARTIALSOL_LEVEL                            <- 1263L
  LS_IPARAM_SOLVER_MODE                                        <- 1264L
  LS_IPARAM_SOLVER_METHOD                                      <- 1265L
+ LS_IPARAM_SOLVER_DUALSOL                                     <- 1266L
 
     # Advanced parameters for the simplex method (4000 - 41++) #/
  LS_IPARAM_LP_SCALE                                           <- 4029L
@@ -387,6 +389,7 @@
  LS_DPARAM_NLP_CUTOFFOBJ                                      <- 2553L
  LS_IPARAM_NLP_USECUTOFFOBJ                                   <- 2554L
  LS_IPARAM_NLP_CONIC_REFORM                                   <- 2555L
+ LS_IPARAM_NLP_QP_REFORM_LEVEL                                <- 2556L
 
     # Mixed integer programming (MIP) parameters (5000 - 5+++) #/
  LS_IPARAM_MIP_TIMLIM                                         <- 5300L
@@ -500,6 +503,8 @@
  LS_IPARAM_MIP_SYMMETRY_MODE                                  <- 5418L
  LS_IPARAM_MIP_ALLDIFF_METHOD                                 <- 5419L
  LS_IPARAM_MIP_SOLLIM                                         <- 5420L
+ LS_IPARAM_MIP_FP_PROJECTION                                  <- 5421L
+ LS_IPARAM_MIP_SYMMETRY_NONZ                                  <- 5422L
 
     # Global optimization (GOP) parameters (6000 - 6+++) #/
  LS_DPARAM_GOP_RELOPTTOL                                      <- 6400L
@@ -1007,6 +1012,8 @@
  EP_LOGABEXPX                                                 <- 1186L
  EP_LOGSUMEXP                                                 <- 1187L
  EP_LOGSUMAEXP                                                <- 1188L
+ EP_EXPMODIV                                                  <- 1189L
+ EP_POWERUTILITY                                              <- 1190L
 
 
  # Model and solution information codes ( 110xx-140xx) #/
@@ -1088,6 +1095,7 @@
  LS_DINFO_OBJSENSE                                            <- 11075L
  LS_DINFO_OBJRELTOL                                           <- 11076L
  LS_DINFO_OBJABSTOL                                           <- 11077L
+ LS_DINFO_OBJTIMLIM                                           <- 11078L
 
  # LP and NLP related info (11200-11299)#/
  LS_IINFO_METHOD                                              <- 11200L
@@ -1240,6 +1248,7 @@
  LS_SINFO_GOP_THREAD_LOAD                                     <- 11632L
  LS_DINFO_GOP_ABSGAP                                          <- 11633L
  LS_DINFO_GOP_RELGAP                                          <- 11634L
+ LS_IINFO_GOP_WARNING                                         <- 11635L
 
     # Progress info during callbacks #/
  LS_DINFO_SUB_OBJ                                             <- 11700L
@@ -2030,6 +2039,7 @@
  LS_METHOD_SBD                                                <- 10L
  LS_METHOD_SPRINT                                             <- 11L
  LS_METHOD_GA                                                 <- 12L
+ LS_METHOD_FILELP                                             <- 13L
 
 
  LS_STRATEGY_USER                                             <- 0L
@@ -2168,6 +2178,7 @@
  LS_MIP_MODE_FAST_OPTIMALITY                                  <- 8L
  LS_MIP_MODE_NO_BRANCH_CUTS                                   <- 16L
  LS_MIP_MODE_NO_LP_BARRIER                                    <- 32L
+ LS_MIP_MODE_NO_LSLVDP                                        <- 64L
 
 
  # Bit mask for cut generation levels. Use sums to
@@ -2187,6 +2198,8 @@
  LS_MIP_BASIS_CUTS                                            <- 4096L
  LS_MIP_CARDGUB_CUTS                                          <- 8192L
  LS_MIP_DISJUN_CUTS                                           <- 16384L
+ LS_MIP_SOFT_KNAP_CUTS                                        <- 32768L
+ LS_MIP_LP_ROUND_CUTS                                         <- 65536L
 
 
  # Bit masks for MIP preprocessing levels. Use sums
@@ -2466,6 +2479,16 @@
  LS_SOLVER_MODE_POOLEDGE                                      <- 2L
    #! scan for integer basic solutions #/
  LS_SOLVER_MODE_INTBAS                                        <- 4L
+   #! don't scale lex objectives #/
+ LS_SOLVER_MODE_LEX_NOSCALE                                   <- 8L
+   #! relaxed lex-model #/
+ LS_SOLVER_MODE_LEX_RELAXED                                   <- 16L
+   #! export each lex-model #/
+ LS_SOLVER_MODE_LEX_EXPEACH                                   <- 32L
+   #! export failed lex-model #/
+ LS_SOLVER_MODE_LEX_EXPFAIL                                   <- 64L
+   #! resolve failed lex-model #/
+ LS_SOLVER_MODE_LEX_RESOLVEFAIL                               <- 128L
 
 
  LS_PARCLASS_BITMASK                                          <- 1L

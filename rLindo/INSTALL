@@ -2,7 +2,7 @@
 
 ## Requirements
 
-1. LINDO API 13.0 [(https://www.lindo.com)](https://www.lindo.com/index.php/ls-downloads/try-lindo-api).
+1. LINDO API x.y [(https://www.lindo.com)](https://www.lindo.com/index.php/ls-downloads/try-lindo-api), where x.y is the version tag, e.g. 14.0
 
 2. R software 3.5 or later [(https://cran.r-project.org/index.html)](https://cran.r-project.org/index.html).
 
@@ -17,7 +17,7 @@
 
         C:> set LINDOAPI_HOME="c:\lindoapi"
 
-2. Navigate to the directory `c:\lindoapi\R`, where the file `rLindo_13.0.tar.gz` is located.
+2. Navigate to the directory `c:\lindoapi\R`, where the file `rLindo_x.y.tar.gz` is located.
 
 3. Run the following batch script to install the rLindo package.
 
@@ -38,7 +38,7 @@
 
    To have this variable set automatically, add the above line to your `~/.bashrc` file.
 
-2. Navigate to the directory `/opt/lindoapi/R`, where the file `rLindo_13.0.tar.gz` is located.
+2. Navigate to the directory `/opt/lindoapi/R`, where the file `rLindo_x.y.tar.gz` is located.
 
 3. Run the following batch script to install the rLindo package.
  
@@ -55,8 +55,8 @@
 
 4. For Mac/OSX users, change the install name of `rLindo.so` using command:
 
-        $ install_name_tool -change @loader_path/liblindo64.13.0.dylib \
-                             ${LINDOAPI_HOME}/bin/osx64x86/liblindo64.13.0.dylib \
+        $ install_name_tool -change @loader_path/liblindo64.x.y.dylib \
+                             ${LINDOAPI_HOME}/bin/osx64x86/liblindo64.x.y.dylib \
                              ${R_HOME}/library/rLindo/libs/rLindo.so
 
     **Note**: The above command assumes the system is 64-bit and R_HOME environment variable is 

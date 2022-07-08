@@ -6,9 +6,9 @@ echo         Lindo Systems, Inc.
 echo ---------------------------------------
 
 setlocal enabledelayedexpansion
-set RCORE_VER=4.0.0
+set RCORE_VER=4.2.1
 set RCORE_EXE=R-%RCORE_VER%-win.exe
-set RTOOLS_VER=rtools40-x86_64.exe
+set RTOOLS_VER=rtools42-5253-5107.exe
 set RMIN=4.0
 rem ***************************Check whether R is installed***************************
 echo Checking for R...
@@ -27,7 +27,7 @@ FOR /F "tokens=4 delims=\" %%A IN (' "reg query "%KEY_NAME%" /reg:64 2>nul" ') D
 
     if "!R_INSTALLED!" == "true" (
         rem set R installation path
-        set R_PATH_KEY_NAME=%KEY_NAME%\%%A
+        set R_PATH_KEY_NAME=%KEY_NAME%\%%A        
         FOR /F "skip=3 tokens=2*" %%C IN ('REG QUERY "!R_PATH_KEY_NAME!" /v "%R_PATH_REG_VERSION%" /reg:64 2^>nul') DO (
             if "%%D" == !RCORE_VER! (@echo Found R !RCORE_VER!) else (set R_INSTALLED=false)
         )
@@ -52,7 +52,7 @@ FOR /F "tokens=4 delims=\" %%A IN (' "reg query "%KEY_NAME%" /reg:32 2>nul" ') D
 
     if "!R_INSTALLED!" == "true" (
         rem set R installation path
-        set R_PATH_KEY_NAME=%KEY_NAME%\%%A
+        set R_PATH_KEY_NAME=%KEY_NAME%\%%A        
         FOR /F "skip=3 tokens=2*" %%C IN ('REG QUERY "!R_PATH_KEY_NAME!" /v "%R_PATH_REG_VERSION%" /reg:32 2^>nul') DO (
             if "%%D" == !RCORE_VER! (@echo Found R !RCORE_VER!) else (set R_INSTALLED=false)
         )
@@ -74,10 +74,10 @@ FOR /F "tokens=4 delims=\" %%A IN (' "reg query "%KEY_NAME%" /reg:64 2>nul" ') D
     if "%%A" == "R" set R_INSTALLED=true
     if "%%A" == "R32" set R_INSTALLED=true
     if "%%A" == "R64" set R_INSTALLED=true
-
+    
     if "!R_INSTALLED!" == "true" (
         rem set R installation path
-        set R_PATH_KEY_NAME=%KEY_NAME%\%%A
+        set R_PATH_KEY_NAME=%KEY_NAME%\%%A        
         FOR /F "skip=3 tokens=2*" %%C IN ('REG QUERY "!R_PATH_KEY_NAME!" /v "%R_PATH_REG_VERSION%" /reg:64 2^>nul') DO (
             if "%%D" == !RCORE_VER! (@echo Found R !RCORE_VER!) else (set R_INSTALLED=false)
         )
@@ -99,10 +99,10 @@ FOR /F "tokens=4 delims=\" %%A IN (' "reg query "%KEY_NAME%" /reg:32 2>nul" ') D
     if "%%A" == "R" set R_INSTALLED=true
     if "%%A" == "R32" set R_INSTALLED=true
     if "%%A" == "R64" set R_INSTALLED=true
-
+	
     if "!R_INSTALLED!" == "true" (
         rem set R installation path
-        set R_PATH_KEY_NAME=%KEY_NAME%\%%A
+        set R_PATH_KEY_NAME=%KEY_NAME%\%%A        
         FOR /F "skip=3 tokens=2*" %%C IN ('REG QUERY "!R_PATH_KEY_NAME!" /v "%R_PATH_REG_VERSION%" /reg:32 2^>nul') DO (
             if "%%D" == !RCORE_VER! (@echo Found R !RCORE_VER!) else (set R_INSTALLED=false)
         )
@@ -153,7 +153,7 @@ if not "!R_INSTALLED!"=="true" (
 
 :CHECK_R_PATH
 echo R path : %R_PATH%
-    set "PATH=!R_PATH!\bin;%PATH%"    
+set "PATH=!R_PATH!\bin;%PATH%"    
 
 :CHECK_R_VERSION
 R --version 2>version.txt
@@ -258,7 +258,7 @@ if not "!RTOOLS_INSTALLED!"=="true" (
             echo ERROR: Can not find wget.exe.
             goto END
         )
-        wget.exe --no-check-certificate https://cran.r-project.org/bin/windows/Rtools/%RTOOLS_VER% -q --show-progress
+        wget.exe --no-check-certificate https://cran.r-project.org/bin/windows/Rtools/rtools42/files/%RTOOLS_VER% -q --show-progress
         set /P response2= Downloading Rtools completed, press Enter to continue...
     )
     
@@ -277,12 +277,12 @@ echo RTOOLS path : %RTOOLS_PATH%
 
 rem add RTOOLS_PATH to PATH
 if "!R_ARCHITETURE!" == "64bit" (
-    if not exist !RTOOLS_PATH!\mingw64\bin\gcc.exe (
+    if not exist !RTOOLS_PATH!\x86_64-w64-mingw32.static.posix\bin\gcc.exe (
         echo ERROR: R is 64-bit, but can not find 64-bit gcc compiler. ^
 Please reinstall Rtools, and make sure to check "64 bit toolchain" when installing.
         goto END
     )
-    set "PATH=!RTOOLS_PATH!\bin;!RTOOLS_PATH!\mingw64\bin;!RTOOLS_PATH!\usr\bin;%PATH%"
+    set "PATH=!RTOOLS_PATH!\bin;!RTOOLS_PATH!\x86_64-w64-mingw32.static.posix\bin;!RTOOLS_PATH!\usr\bin;%PATH%"
 ) else (
     if not exist !RTOOLS_PATH!\mingw32\bin\gcc.exe (
         echo ERROR: R is 32-bit, but can not find 32-bit gcc compiler. ^
@@ -304,7 +304,7 @@ if not exist %LINDOAPI_HOME%/lib. (
 	echo %LINDOAPI_HOME%/lib is not a valid library path
 	goto END
 )
-echo Checking for LINDO API 14.0...
+echo Checking for LINDO API 13.0...
 if !R_ARCHITETURE! == "64bit" (
     if not exist %LINDOAPI_HOME%\bin\win64\. (
         echo ERROR: Can not find 64-bit LINDO API %LS_MAJOR%.%LS_MINOR%.

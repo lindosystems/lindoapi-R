@@ -69,11 +69,11 @@ Tell R to connect to rLindo by typing:
 \subsubsection{Linux or other Unix-like systems}
 NOTE: Make sure to login as the 'root' user to perform these steps.
 \begin{enumerate}
-\item Install LINDO API for the host platform (e.g. Linux 32 or 64-bit).
+\item Install LINDO API x.y for the host platform (e.g. Linux 32 or 64-bit) where x.y is the version tag, e.g. 14.0.
 
 \item Install R (and R-devel if R headers are missing on your system).
 
-\item Make sure \$LINDOAPI\_HOME points to the installation path of LINDO API. If not,
+\item Make sure \$LINDOAPI\_HOME points to the installation path of LINDO API x.y. If not,
 
 \hspace{.3in}\emph{\$export LINDOAPI\_HOME=\lq\lq /home/lindoapi\rq\rq}
 
@@ -81,7 +81,7 @@ To automatically set this variable, please add the above command to the {\fontfa
 Note that your LINDO API folder may lie in a folder other than /home/lindoapi, in which 
 case, you should modify the above statement accordingly.
 
-\item Navigate to the \lq\lq lindoapi/R\rq\rq\ directory where rLindo\_xx.yy.tar.gz is located, where xx.yy denotes the version.
+\item Navigate to the \lq\lq lindoapi/R\rq\rq\ directory where rLindo\_x.y.tar.gz is located.
 
 \item Run the following command to install the rLindo package.
 
@@ -94,7 +94,7 @@ case, you should modify the above statement accordingly.
 \end{enumerate}
 
 \section{Usage}
-To use the package users must have a valid license file named lndapixyz.lic under the folder LINDOAPI\_HOME/license. The R interface function names use the convention of 'r' + name of LINDO API function, 
+To use the package users must have a valid license file named lndapi\[xy\].lic under the folder LINDOAPI\_HOME/license. The R interface function names use the convention of 'r' + name of LINDO API function, 
 e.g. \textit{rLScreateEnv} in the R interface corresponds to \textit{LScreateEnv} in LINDO API.
 All LINDO parameters and constants are the same with LINDO API.
 

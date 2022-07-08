@@ -125,7 +125,7 @@ a, a:visited {
 <h2>Requirements</h2>
 
 <ol>
-<li><p>LINDO API 13.0 <a href="https://www.lindo.com/index.php/ls-downloads/try-lindo-api">(https://www.lindo.com)</a>.</p></li>
+<li><p>LINDO API x.y <a href="https://www.lindo.com/index.php/ls-downloads/try-lindo-api">(https://www.lindo.com)</a>, where x.y is the version tag, e.g. 14.0</p></li>
 <li><p>R software 3.5 or later <a href="https://cran.r-project.org/index.html">(https://cran.r-project.org/index.html)</a>.</p></li>
 <li><p>Rtools (Windows only) <a href="http://www.cran.r-project.org/doc/manuals/R-admin.html#The-Windows-toolset">(http://www.cran.r-project.org/doc/manuals/R-admin.html#The-Windows-toolset)</a>.</p></li>
 </ol>
@@ -139,7 +139,7 @@ a, a:visited {
 
 <pre><code>C:&gt; set LINDOAPI_HOME="c:\lindoapi"
 </code></pre></li>
-<li><p>Navigate to the directory <code>c:\lindoapi\R</code>, where the file <code>rLindo_13.0.tar.gz</code> is located.</p></li>
+<li><p>Navigate to the directory <code>c:\lindoapi\R</code>, where the file <code>rLindo_x.y.tar.gz</code> is located.</p></li>
 <li><p>Run the following batch script to install the rLindo package.</p>
 
 <pre><code>C:&gt; install-rlindo.bat
@@ -161,7 +161,7 @@ a, a:visited {
 </code></pre>
 
 <p>To have this variable set automatically, add the above line to your <code>~/.bashrc</code> file.</p></li>
-<li><p>Navigate to the directory <code>/opt/lindoapi/R</code>, where the file <code>rLindo_13.0.tar.gz</code> is located.</p></li>
+<li><p>Navigate to the directory <code>/opt/lindoapi/R</code>, where the file <code>rLindo_x.y.tar.gz</code> is located.</p></li>
 <li><p>Run the following batch script to install the rLindo package.</p>
 
 <pre><code>$ ./install-rlindo.sh
@@ -179,8 +179,8 @@ checking whether the c compiler works...no
 </code></pre></li>
 <li><p>For Mac/OSX users, change the install name of <code>rLindo.so</code> using command:</p>
 
-<pre><code>$ install_name_tool -change @loader_path/liblindo64.13.0.dylib \
-                     ${LINDOAPI_HOME}/bin/osx64x86/liblindo64.13.0.dylib \
+<pre><code>$ install_name_tool -change @loader_path/liblindo64.x.y.dylib \
+                     ${LINDOAPI_HOME}/bin/osx64x86/liblindo64.x.y.dylib \
                      ${R_HOME}/library/rLindo/libs/rLindo.so
 </code></pre>
 

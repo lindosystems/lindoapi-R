@@ -1351,5 +1351,6 @@ SEXP rcLSgetDualMIPsolution(SEXP spModel);
 SEXP rcLSgetDuplicateColumns(SEXP spModel,SEXP snCheckVals);
 SEXP rcLSgetObjPoolParam(SEXP spModel, SEXP snObjIndex, SEXP smParam);
 SEXP rcLSsetEnvLogfunc(SEXP sEnv, SEXP sFunc, SEXP sData);
-
 SEXP rcLSgetProgressInfo(SEXP spModel, SEXP snLocation, SEXP snQuery);
+SEXP rcLSdeleteIndConstraints(SEXP spModel, SEXP snCons, SEXP spaiCons);
+SEXP rcLSloadIndData(SEXP spModel, SEXP snIndicRows, SEXP spaiIndicRows, SEXP spaiIndicCols, SEXP spaiIndicVals);

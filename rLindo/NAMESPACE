@@ -1967,8 +1967,7 @@ rLSsetModelLogfunc,
 rLSsetCallback,
 rLSsetFuncalc,
 rLSsetMIPCallback,
-rLSgetProgressInfo,
-rLSsetEnvLogfunc,
+
 ##Statistical Calculations Interface (15)
 rLSsampCreate,
 rLSsampDelete,

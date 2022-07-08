@@ -1,7 +1,7 @@
 /*  rLindo.c
-    The R interface to LINDO API 11.0 - 13.0
+    The R interface to LINDO API 11.0 - 14.0
     This file includes all C wrapper functions for LINDO API C functions.
-    Copyright (C) 2017-2020 LINDO Systems.
+    Copyright (C) 2017-2022 LINDO Systems.
 */
 
 
@@ -253,7 +253,7 @@ SEXP rcLScreateEnv()
         return R_NilValue;
     }
 
-    sprintf(pachLicPath,"%s//license//lndapi130.lic",getenv("LINDOAPI_HOME"));
+    sprintf(pachLicPath,"%s//license//lndapi%d%d.lic",getenv("LINDOAPI_HOME"),LS_MAJOR_VER_NUMBER,LS_MINOR_VER_NUMBER);
     fprintf(stdout,"Loading license file '%s'\n",pachLicPath); fflush(stdout);
     nErrorCode = LSloadLicenseString(pachLicPath,MY_LICENSE_KEY);
 
@@ -1686,7 +1686,7 @@ SEXP rcLSreadEnvParameter(SEXP sEnv,
     INI_ERR_CODE;
 
     CHECK_ENV_ERROR;
-    
+
     *pnErrorCode = LSreadEnvParameter(pEnv,pszFname);
 
 ErrorReturn:
@@ -14228,7 +14228,7 @@ SEXP rcLSgetVersionInfo()
 
     Rprintf("\nrLindo package for LINDO API %s, built on %s\n\n",ver_num,build_date);
 
-    return R_NilValue; 
+    return R_NilValue;
 }
 
 /*
@@ -14243,11 +14243,11 @@ SEXP rcLSwriteVarPriorities(SEXP spModel,SEXP spszFname,SEXP snMode) {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   char *pszFname;
   int nMode;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -14256,22 +14256,22 @@ SEXP rcLSwriteVarPriorities(SEXP spModel,SEXP spszFname,SEXP snMode) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));    
-  ibuf[3] = nMode = Rf_asInteger(snMode);   
 
-  CHECK_MODEL_ERROR;    
+  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));
+  ibuf[3] = nMode = Rf_asInteger(snMode);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
 
-  // Get C pointers 
+
+  // Get C pointers
   *pnErrorCode = errorcode = LSwriteVarPriorities(pModel
     ,sbuf[2] //*pszFname
     ,ibuf[3]); //nMode
@@ -14279,13 +14279,13 @@ SEXP rcLSwriteVarPriorities(SEXP spModel,SEXP spszFname,SEXP snMode) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 /*
@@ -14294,21 +14294,21 @@ ErrorReturn:
  * @param[in,out] padC
  * @param[in,out] mObjSense
  * @param[in,out] mRank
- * @param[in,out] dRelOptTol  
+ * @param[in,out] dRelOptTol
  * @return int An integer error code
- * @remark errorcode = rLSaddObjPool(pModel,padC,mObjSense,mRank,dRelOptTol) 
- */    
+ * @remark errorcode = rLSaddObjPool(pModel,padC,mObjSense,mRank,dRelOptTol)
+ */
 SEXP rcLSaddObjPool(SEXP spModel,SEXP spadC,SEXP smObjSense,SEXP smRank,SEXP sdRelOptTol) {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   double *padC;
   int mObjSense;
   int mRank;
   double dRelOptTol;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -14317,26 +14317,26 @@ SEXP rcLSaddObjPool(SEXP spModel,SEXP spadC,SEXP smObjSense,SEXP smRank,SEXP sdR
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  MAKE_REAL_ARRAY(padC,spadC);    
-  ibuf[3] = mObjSense = Rf_asInteger(smObjSense);    
-  ibuf[4] = mRank = Rf_asInteger(smRank);    
-  dbuf[5] = dRelOptTol = Rf_asReal(sdRelOptTol);   
 
-  CHECK_MODEL_ERROR;    
+  MAKE_REAL_ARRAY(padC,spadC);
+  ibuf[3] = mObjSense = Rf_asInteger(smObjSense);
+  ibuf[4] = mRank = Rf_asInteger(smRank);
+  dbuf[5] = dRelOptTol = Rf_asReal(sdRelOptTol);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
 
-  // Get C pointers    
-  dvecptr[2] = (double*)padC;  
-  
+
+  // Get C pointers
+  dvecptr[2] = (double*)padC;
+
   *pnErrorCode = errorcode = LSaddObjPool(pModel
     ,dvecptr[2] //*padC
     ,ibuf[3] //mObjSense
@@ -14346,32 +14346,32 @@ SEXP rcLSaddObjPool(SEXP spModel,SEXP spadC,SEXP smObjSense,SEXP smRank,SEXP sdR
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
  * @brief LSwriteTunerConfigString
  * @param[in,out] pEnv
  * @param[in,out] szJsonString
- * @param[in,out] szJsonFile  
+ * @param[in,out] szJsonFile
  * @return int An integer error code
- * @remark errorcode = rLSwriteTunerConfigString(pEnv,szJsonString,szJsonFile) 
- */    
+ * @remark errorcode = rLSwriteTunerConfigString(pEnv,szJsonString,szJsonFile)
+ */
 SEXP rcLSwriteTunerConfigString(SEXP spEnv,SEXP sszJsonString,SEXP sszJsonFile) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   char *szJsonString;
   char *szJsonFile;
-  
-    
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -14380,13 +14380,13 @@ SEXP rcLSwriteTunerConfigString(SEXP spEnv,SEXP sszJsonString,SEXP sszJsonFile) 
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = szJsonString = (char *) CHAR(STRING_ELT(sszJsonString,0));    
-  sbuf[3] = szJsonFile = (char *) CHAR(STRING_ELT(sszJsonFile,0));   
+
+  sbuf[2] = szJsonString = (char *) CHAR(STRING_ELT(sszJsonString,0));
+  sbuf[3] = szJsonFile = (char *) CHAR(STRING_ELT(sszJsonFile,0));
 
   CHECK_ENV_ERROR;
 
@@ -14398,13 +14398,13 @@ SEXP rcLSwriteTunerConfigString(SEXP spEnv,SEXP sszJsonString,SEXP sszJsonFile) 
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
@@ -14412,20 +14412,20 @@ ErrorReturn:
  * @param[in,out] pEnv
  * @param[in,out] szFile
  * @param[in,out] jInstance
- * @param[in,out] mCriterion  
+ * @param[in,out] mCriterion
  * @return int An integer error code
- * @remark errorcode = rLSwriteTunerParameters(pEnv,szFile,jInstance,mCriterion) 
- */    
+ * @remark errorcode = rLSwriteTunerParameters(pEnv,szFile,jInstance,mCriterion)
+ */
 SEXP rcLSwriteTunerParameters(SEXP spEnv,SEXP sszFile,SEXP sjInstance,SEXP smCriterion) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   char *szFile;
   int jInstance;
   int mCriterion;
-  
-    
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -14434,14 +14434,14 @@ SEXP rcLSwriteTunerParameters(SEXP spEnv,SEXP sszFile,SEXP sjInstance,SEXP smCri
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = szFile = (char *) CHAR(STRING_ELT(sszFile,0));    
-  ibuf[3] = jInstance = Rf_asInteger(sjInstance);    
-  ibuf[4] = mCriterion = Rf_asInteger(smCriterion);   
+
+  sbuf[2] = szFile = (char *) CHAR(STRING_ELT(sszFile,0));
+  ibuf[3] = jInstance = Rf_asInteger(sjInstance);
+  ibuf[4] = mCriterion = Rf_asInteger(smCriterion);
 
   CHECK_ENV_ERROR;
 
@@ -14454,31 +14454,31 @@ SEXP rcLSwriteTunerParameters(SEXP spEnv,SEXP sszFile,SEXP sjInstance,SEXP smCri
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 
   /*
  * @brief LSwriteParameterAsciiDoc
  * @param[in,out] pEnv
- * @param[in,out] pszFileName  
+ * @param[in,out] pszFileName
  * @return int An integer error code
- * @remark errorcode = rLSwriteParameterAsciiDoc(pEnv,pszFileName) 
- */    
+ * @remark errorcode = rLSwriteParameterAsciiDoc(pEnv,pszFileName)
+ */
 SEXP rcLSwriteParameterAsciiDoc(SEXP spEnv,SEXP spszFileName) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   char *pszFileName;
-  
-    
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -14487,12 +14487,12 @@ SEXP rcLSwriteParameterAsciiDoc(SEXP spEnv,SEXP spszFileName) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = pszFileName = (char *) CHAR(STRING_ELT(spszFileName,0));   
+
+  sbuf[2] = pszFileName = (char *) CHAR(STRING_ELT(spszFileName,0));
 
   CHECK_ENV_ERROR;
 
@@ -14503,31 +14503,31 @@ SEXP rcLSwriteParameterAsciiDoc(SEXP spEnv,SEXP spszFileName) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 
   /*
  * @brief LSaddTunerInstance
  * @param[in,out] pEnv
- * @param[in,out] szFile  
+ * @param[in,out] szFile
  * @return int An integer error code
- * @remark errorcode = rLSaddTunerInstance(pEnv,szFile) 
- */    
+ * @remark errorcode = rLSaddTunerInstance(pEnv,szFile)
+ */
 SEXP rcLSaddTunerInstance(SEXP spEnv,SEXP sszFile) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   char *szFile;
-  
-    
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -14536,12 +14536,12 @@ SEXP rcLSaddTunerInstance(SEXP spEnv,SEXP sszFile) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = szFile = (char *) CHAR(STRING_ELT(sszFile,0));   
+
+  sbuf[2] = szFile = (char *) CHAR(STRING_ELT(sszFile,0));
 
   CHECK_ENV_ERROR;
 
@@ -14552,32 +14552,32 @@ SEXP rcLSaddTunerInstance(SEXP spEnv,SEXP sszFile) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
  * @brief LSaddTunerOption
  * @param[in,out] pEnv
  * @param[in,out] szKey
- * @param[in,out] dValue  
+ * @param[in,out] dValue
  * @return int An integer error code
- * @remark errorcode = rLSaddTunerOption(pEnv,szKey,dValue) 
- */    
+ * @remark errorcode = rLSaddTunerOption(pEnv,szKey,dValue)
+ */
 SEXP rcLSaddTunerOption(SEXP spEnv,SEXP sszKey,SEXP sdValue) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   char *szKey;
   double dValue;
-  
-    
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -14586,13 +14586,13 @@ SEXP rcLSaddTunerOption(SEXP spEnv,SEXP sszKey,SEXP sdValue) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = szKey = (char *) CHAR(STRING_ELT(sszKey,0));    
-  dbuf[3] = dValue = Rf_asReal(sdValue);   
+
+  sbuf[2] = szKey = (char *) CHAR(STRING_ELT(sszKey,0));
+  dbuf[3] = dValue = Rf_asReal(sdValue);
 
   CHECK_ENV_ERROR;
 
@@ -14604,30 +14604,30 @@ SEXP rcLSaddTunerOption(SEXP spEnv,SEXP sszKey,SEXP sdValue) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
  * @brief LSaddTunerZDynamic
  * @param[in,out] pEnv
- * @param[in,out] iParam  
+ * @param[in,out] iParam
  * @return int An integer error code
- * @remark errorcode = rLSaddTunerZDynamic(pEnv,iParam) 
- */    
+ * @remark errorcode = rLSaddTunerZDynamic(pEnv,iParam)
+ */
 SEXP rcLSaddTunerZDynamic(SEXP spEnv,SEXP siParam) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   int iParam;
-  
-    
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -14636,12 +14636,12 @@ SEXP rcLSaddTunerZDynamic(SEXP spEnv,SEXP siParam) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = iParam = Rf_asInteger(siParam);   
+
+  ibuf[2] = iParam = Rf_asInteger(siParam);
 
   CHECK_ENV_ERROR;
 
@@ -14652,13 +14652,13 @@ SEXP rcLSaddTunerZDynamic(SEXP spEnv,SEXP siParam) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
@@ -14666,20 +14666,20 @@ ErrorReturn:
  * @param[in,out] pEnv
  * @param[in,out] jGroupId
  * @param[in,out] iParam
- * @param[in,out] dValue  
+ * @param[in,out] dValue
  * @return int An integer error code
- * @remark errorcode = rLSaddTunerZStatic(pEnv,jGroupId,iParam,dValue) 
- */    
+ * @remark errorcode = rLSaddTunerZStatic(pEnv,jGroupId,iParam,dValue)
+ */
 SEXP rcLSaddTunerZStatic(SEXP spEnv,SEXP sjGroupId,SEXP siParam,SEXP sdValue) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   int jGroupId;
   int iParam;
   double dValue;
-  
-    
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -14688,14 +14688,14 @@ SEXP rcLSaddTunerZStatic(SEXP spEnv,SEXP sjGroupId,SEXP siParam,SEXP sdValue) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = jGroupId = Rf_asInteger(sjGroupId);    
-  ibuf[3] = iParam = Rf_asInteger(siParam);    
-  dbuf[4] = dValue = Rf_asReal(sdValue);   
+
+  ibuf[2] = jGroupId = Rf_asInteger(sjGroupId);
+  ibuf[3] = iParam = Rf_asInteger(siParam);
+  dbuf[4] = dValue = Rf_asReal(sdValue);
 
   CHECK_ENV_ERROR;
 
@@ -14708,29 +14708,29 @@ SEXP rcLSaddTunerZStatic(SEXP spEnv,SEXP sjGroupId,SEXP siParam,SEXP sdValue) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 
   /*
  * @brief LSclearTuner
- * @param[in,out] pEnv  
+ * @param[in,out] pEnv
  * @return int An integer error code
- * @remark errorcode = rLSclearTuner(pEnv) 
- */    
+ * @remark errorcode = rLSclearTuner(pEnv)
+ */
 SEXP rcLSclearTuner(SEXP spEnv) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
-  
-    
+
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -14739,11 +14739,11 @@ SEXP rcLSclearTuner(SEXP spEnv) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
+
 
   CHECK_ENV_ERROR;
 
@@ -14753,28 +14753,28 @@ SEXP rcLSclearTuner(SEXP spEnv) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
  * @brief LSdisplayTunerResults
- * @param[in,out] pEnv  
+ * @param[in,out] pEnv
  * @return int An integer error code
- * @remark errorcode = rLSdisplayTunerResults(pEnv) 
- */    
+ * @remark errorcode = rLSdisplayTunerResults(pEnv)
+ */
 SEXP rcLSdisplayTunerResults(SEXP spEnv) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
-  
-    
+
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -14783,11 +14783,11 @@ SEXP rcLSdisplayTunerResults(SEXP spEnv) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
+
 
   CHECK_ENV_ERROR;
 
@@ -14797,28 +14797,28 @@ SEXP rcLSdisplayTunerResults(SEXP spEnv) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
  * @brief LSgetTunerConfigString
  * @param[in,out] pEnv
- * @param[in,out] pszJsonString  
+ * @param[in,out] pszJsonString
  * @return int An integer error code
- * @remark errorcode,spszJsonString = rLSgetTunerConfigString(pEnv) 
- */    
+ * @remark errorcode,spszJsonString = rLSgetTunerConfigString(pEnv)
+ */
 SEXP rcLSgetTunerConfigString(SEXP spEnv) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
-  char      *pszJsonString;  
+
+  char      *pszJsonString;
   SEXP      spszJsonString = R_NilValue;
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
@@ -14828,18 +14828,18 @@ SEXP rcLSgetTunerConfigString(SEXP spEnv) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 2;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-     
+
   CHECK_ENV_ERROR;
 
   // Get C pointers
   *pnErrorCode = errorcode = LSgetTunerConfigString(pEnv
     ,&sbuf[2]); //**pszJsonString
   CHECK_ERRCODE;
-    
+
   PROTECT(spszJsonString = NEW_CHARACTER(1));
   nProtect += 1;
   pszJsonString = sbuf[2];
@@ -14848,32 +14848,32 @@ SEXP rcLSgetTunerConfigString(SEXP spEnv) {
 ErrorReturn:
   if (sbuf[2]) free(sbuf[2]);
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   SET_VECTOR_ELT(rList, 1, spszJsonString);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
  * @brief LSgetTunerOption
  * @param[in,out] pEnv
  * @param[in,out] szkey
- * @param[in,out] pdval  
+ * @param[in,out] pdval
  * @return int An integer error code
- * @remark errorcode = rLSgetTunerOption(pEnv,szkey) 
- */    
+ * @remark errorcode = rLSgetTunerOption(pEnv,szkey)
+ */
 SEXP rcLSgetTunerOption(SEXP spEnv,SEXP sszkey) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   char *szkey;
   double *pdval;
-  
+
   SEXP      spdval = R_NilValue;
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
@@ -14883,20 +14883,20 @@ SEXP rcLSgetTunerOption(SEXP spEnv,SEXP sszkey) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 2;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = szkey = (char *) CHAR(STRING_ELT(sszkey,0));      
+
+  sbuf[2] = szkey = (char *) CHAR(STRING_ELT(sszkey,0));
 
   CHECK_ENV_ERROR;
 
-  // Get C pointers 
+  // Get C pointers
   PROTECT(spdval = NEW_NUMERIC(1));
-  nProtect += 1;    
+  nProtect += 1;
   dvecptr[3] = pdval = NUMERIC_POINTER(spdval); //pdval
-  
+
   *pnErrorCode = errorcode = LSgetTunerOption(pEnv
     ,sbuf[2] //*szkey
     ,dvecptr[3]); //*pdval
@@ -14904,14 +14904,14 @@ SEXP rcLSgetTunerOption(SEXP spEnv,SEXP sszkey) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   SET_VECTOR_ELT(rList, 1, spdval);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 
@@ -14921,20 +14921,20 @@ ErrorReturn:
  * @param[in,out] szkey
  * @param[in,out] jInstance
  * @param[in,out] kConfig
- * @param[in,out] pdval  
+ * @param[in,out] pdval
  * @return int An integer error code
- * @remark errorcode = rLSgetTunerResult(pEnv,szkey,jInstance,kConfig) 
- */    
+ * @remark errorcode = rLSgetTunerResult(pEnv,szkey,jInstance,kConfig)
+ */
 SEXP rcLSgetTunerResult(SEXP spEnv,SEXP sszkey,SEXP sjInstance,SEXP skConfig) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   char *szkey;
   int jInstance;
   int kConfig;
   double *pdval;
-  
+
   SEXP      spdval = R_NilValue;
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
@@ -14944,22 +14944,22 @@ SEXP rcLSgetTunerResult(SEXP spEnv,SEXP sszkey,SEXP sjInstance,SEXP skConfig) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 2;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = szkey = (char *) CHAR(STRING_ELT(sszkey,0));    
-  ibuf[3] = jInstance = Rf_asInteger(sjInstance);    
-  ibuf[4] = kConfig = Rf_asInteger(skConfig);    
+
+  sbuf[2] = szkey = (char *) CHAR(STRING_ELT(sszkey,0));
+  ibuf[3] = jInstance = Rf_asInteger(sjInstance);
+  ibuf[4] = kConfig = Rf_asInteger(skConfig);
 
   CHECK_ENV_ERROR;
 
-  // Get C pointers 
+  // Get C pointers
   PROTECT(spdval = NEW_NUMERIC(1));
-  nProtect += 1;    
+  nProtect += 1;
   dvecptr[5] = pdval = NUMERIC_POINTER(spdval); //pdval
-  
+
   *pnErrorCode = errorcode = LSgetTunerResult(pEnv
     ,sbuf[2] //*szkey
     ,ibuf[3] //jInstance
@@ -14969,14 +14969,14 @@ SEXP rcLSgetTunerResult(SEXP spEnv,SEXP sszkey,SEXP sjInstance,SEXP skConfig) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   SET_VECTOR_ELT(rList, 1, spdval);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 
@@ -14984,10 +14984,10 @@ SEXP rcLSgetTunerSpace(SEXP spEnv) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   int *panParamId;
   int *numParam;
-  
+
   SEXP      spanParamId = R_NilValue, snumParam = R_NilValue;
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
@@ -14997,26 +14997,26 @@ SEXP rcLSgetTunerSpace(SEXP spEnv) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 3;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
+
   CHECK_ENV_ERROR;
 
   PROTECT(snumParam = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[3] = numParam = INTEGER_POINTER(snumParam); //numParam
 
   *pnErrorCode = errorcode = LSgetTunerSpace(pEnv
     ,NULL //*panParamId
-    ,ivecptr[3]); //*numParam  
-    
-  // Get C pointers 
+    ,ivecptr[3]); //*numParam
+
+  // Get C pointers
   PROTECT(spanParamId = NEW_INTEGER(*numParam));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[2] = panParamId = INTEGER_POINTER(spanParamId); //panParamId
-     
+
   *pnErrorCode = errorcode = LSgetTunerSpace(pEnv
     ,ivecptr[2] //*panParamId
     ,ivecptr[3]); //*numParam
@@ -15024,15 +15024,15 @@ SEXP rcLSgetTunerSpace(SEXP spEnv) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   SET_VECTOR_ELT(rList, 1, spanParamId);
   SET_VECTOR_ELT(rList, 2, snumParam);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 
@@ -15040,18 +15040,18 @@ ErrorReturn:
  * @brief LSgetTunerStrOption
  * @param[in,out] pEnv
  * @param[in,out] szkey
- * @param[in,out] szval  
+ * @param[in,out] szval
  * @return int An integer error code
- * @remark errorcode = rLSgetTunerStrOption(pEnv,szkey) 
- */    
+ * @remark errorcode = rLSgetTunerStrOption(pEnv,szkey)
+ */
 SEXP rcLSgetTunerStrOption(SEXP spEnv,SEXP sszkey) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   char *szkey;
   char szval[255];
-  
+
   SEXP      sszval = R_NilValue;
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
@@ -15061,12 +15061,12 @@ SEXP rcLSgetTunerStrOption(SEXP spEnv,SEXP sszkey) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 2;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = szkey = (char *) CHAR(STRING_ELT(sszkey,0));      
+
+  sbuf[2] = szkey = (char *) CHAR(STRING_ELT(sszkey,0));
 
   CHECK_ENV_ERROR;
 
@@ -15079,31 +15079,31 @@ SEXP rcLSgetTunerStrOption(SEXP spEnv,SEXP sszkey) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   SET_VECTOR_ELT(rList, 1, sszval);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
  * @brief LSloadTunerConfigFile
  * @param[in,out] pEnv
- * @param[in,out] szJsonFile  
+ * @param[in,out] szJsonFile
  * @return int An integer error code
- * @remark errorcode = rLSloadTunerConfigFile(pEnv,szJsonFile) 
- */    
+ * @remark errorcode = rLSloadTunerConfigFile(pEnv,szJsonFile)
+ */
 SEXP rcLSloadTunerConfigFile(SEXP spEnv,SEXP sszJsonFile) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   char *szJsonFile;
-  
-    
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -15112,12 +15112,12 @@ SEXP rcLSloadTunerConfigFile(SEXP spEnv,SEXP sszJsonFile) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = szJsonFile = (char *) CHAR(STRING_ELT(sszJsonFile,0));   
+
+  sbuf[2] = szJsonFile = (char *) CHAR(STRING_ELT(sszJsonFile,0));
 
   CHECK_ENV_ERROR;
 
@@ -15128,30 +15128,30 @@ SEXP rcLSloadTunerConfigFile(SEXP spEnv,SEXP sszJsonFile) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
  * @brief LSloadTunerConfigString
  * @param[in,out] pEnv
- * @param[in,out] szJsonString  
+ * @param[in,out] szJsonString
  * @return int An integer error code
- * @remark errorcode = rLSloadTunerConfigString(pEnv,szJsonString) 
- */    
+ * @remark errorcode = rLSloadTunerConfigString(pEnv,szJsonString)
+ */
 SEXP rcLSloadTunerConfigString(SEXP spEnv,SEXP sszJsonString) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   char *szJsonString;
-  
-    
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -15160,12 +15160,12 @@ SEXP rcLSloadTunerConfigString(SEXP spEnv,SEXP sszJsonString) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = szJsonString = (char *) CHAR(STRING_ELT(sszJsonString,0));   
+
+  sbuf[2] = szJsonString = (char *) CHAR(STRING_ELT(sszJsonString,0));
 
   CHECK_ENV_ERROR;
 
@@ -15176,28 +15176,28 @@ SEXP rcLSloadTunerConfigString(SEXP spEnv,SEXP sszJsonString) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
  * @brief LSprintTuner
- * @param[in,out] pEnv  
+ * @param[in,out] pEnv
  * @return int An integer error code
- * @remark errorcode = rLSprintTuner(pEnv) 
- */    
+ * @remark errorcode = rLSprintTuner(pEnv)
+ */
 SEXP rcLSprintTuner(SEXP spEnv) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
-  
-    
+
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -15206,11 +15206,11 @@ SEXP rcLSprintTuner(SEXP spEnv) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
+
 
   CHECK_ENV_ERROR;
 
@@ -15220,28 +15220,28 @@ SEXP rcLSprintTuner(SEXP spEnv) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
  * @brief LSresetTuner
- * @param[in,out] pEnv  
+ * @param[in,out] pEnv
  * @return int An integer error code
- * @remark errorcode = rLSresetTuner(pEnv) 
- */    
+ * @remark errorcode = rLSresetTuner(pEnv)
+ */
 SEXP rcLSresetTuner(SEXP spEnv) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
-  
-    
+
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -15250,11 +15250,11 @@ SEXP rcLSresetTuner(SEXP spEnv) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
+
 
   CHECK_ENV_ERROR;
 
@@ -15264,28 +15264,28 @@ SEXP rcLSresetTuner(SEXP spEnv) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
  * @brief LSrunTuner
- * @param[in,out] pEnv  
+ * @param[in,out] pEnv
  * @return int An integer error code
- * @remark errorcode = rLSrunTuner(pEnv) 
- */    
+ * @remark errorcode = rLSrunTuner(pEnv)
+ */
 SEXP rcLSrunTuner(SEXP spEnv) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
-  
-    
+
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -15294,11 +15294,11 @@ SEXP rcLSrunTuner(SEXP spEnv) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
+
 
   CHECK_ENV_ERROR;
 
@@ -15308,30 +15308,30 @@ SEXP rcLSrunTuner(SEXP spEnv) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
  * @brief LSrunTunerFile
  * @param[in,out] pEnv
- * @param[in,out] szJsonFile  
+ * @param[in,out] szJsonFile
  * @return int An integer error code
- * @remark errorcode = rLSrunTunerFile(pEnv,szJsonFile) 
- */    
+ * @remark errorcode = rLSrunTunerFile(pEnv,szJsonFile)
+ */
 SEXP rcLSrunTunerFile(SEXP spEnv,SEXP sszJsonFile) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   char *szJsonFile;
-  
-    
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -15340,12 +15340,12 @@ SEXP rcLSrunTunerFile(SEXP spEnv,SEXP sszJsonFile) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = szJsonFile = (char *) CHAR(STRING_ELT(sszJsonFile,0));   
+
+  sbuf[2] = szJsonFile = (char *) CHAR(STRING_ELT(sszJsonFile,0));
 
   CHECK_ENV_ERROR;
 
@@ -15356,30 +15356,30 @@ SEXP rcLSrunTunerFile(SEXP spEnv,SEXP sszJsonFile) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
  * @brief LSrunTunerString
  * @param[in,out] pEnv
- * @param[in,out] szJsonString  
+ * @param[in,out] szJsonString
  * @return int An integer error code
- * @remark errorcode = rLSrunTunerString(pEnv,szJsonString) 
- */    
+ * @remark errorcode = rLSrunTunerString(pEnv,szJsonString)
+ */
 SEXP rcLSrunTunerString(SEXP spEnv,SEXP sszJsonString) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   char *szJsonString;
-  
-    
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -15388,12 +15388,12 @@ SEXP rcLSrunTunerString(SEXP spEnv,SEXP sszJsonString) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = szJsonString = (char *) CHAR(STRING_ELT(sszJsonString,0));   
+
+  sbuf[2] = szJsonString = (char *) CHAR(STRING_ELT(sszJsonString,0));
 
   CHECK_ENV_ERROR;
 
@@ -15404,32 +15404,32 @@ SEXP rcLSrunTunerString(SEXP spEnv,SEXP sszJsonString) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
  * @brief LSsetTunerOption
  * @param[in,out] pEnv
  * @param[in,out] szKey
- * @param[in,out] dval  
+ * @param[in,out] dval
  * @return int An integer error code
- * @remark errorcode = rLSsetTunerOption(pEnv,szKey,dval) 
- */    
+ * @remark errorcode = rLSsetTunerOption(pEnv,szKey,dval)
+ */
 SEXP rcLSsetTunerOption(SEXP spEnv,SEXP sszKey,SEXP sdval) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   char *szKey;
   double dval;
-  
-    
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -15438,13 +15438,13 @@ SEXP rcLSsetTunerOption(SEXP spEnv,SEXP sszKey,SEXP sdval) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = szKey = (char *) CHAR(STRING_ELT(sszKey,0));    
-  dbuf[3] = dval = Rf_asReal(sdval);   
+
+  sbuf[2] = szKey = (char *) CHAR(STRING_ELT(sszKey,0));
+  dbuf[3] = dval = Rf_asReal(sdval);
 
   CHECK_ENV_ERROR;
 
@@ -15456,32 +15456,32 @@ SEXP rcLSsetTunerOption(SEXP spEnv,SEXP sszKey,SEXP sdval) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
  * @brief LSsetTunerStrOption
  * @param[in,out] pEnv
  * @param[in,out] szKey
- * @param[in,out] szval  
+ * @param[in,out] szval
  * @return int An integer error code
- * @remark errorcode = rLSsetTunerStrOption(pEnv,szKey,szval) 
- */    
+ * @remark errorcode = rLSsetTunerStrOption(pEnv,szKey,szval)
+ */
 SEXP rcLSsetTunerStrOption(SEXP spEnv,SEXP sszKey,SEXP sszval) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   char *szKey;
   char *szval;
-  
-    
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -15490,13 +15490,13 @@ SEXP rcLSsetTunerStrOption(SEXP spEnv,SEXP sszKey,SEXP sszval) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = szKey = (char *) CHAR(STRING_ELT(sszKey,0));    
-  sbuf[3] = szval = (char *) CHAR(STRING_ELT(sszval,0));   
+
+  sbuf[2] = szKey = (char *) CHAR(STRING_ELT(sszKey,0));
+  sbuf[3] = szval = (char *) CHAR(STRING_ELT(sszval,0));
 
   CHECK_ENV_ERROR;
 
@@ -15508,13 +15508,13 @@ SEXP rcLSsetTunerStrOption(SEXP spEnv,SEXP sszKey,SEXP sszval) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 
@@ -15522,19 +15522,19 @@ ErrorReturn:
  * @brief LSwriteMPXFile
  * @param[in,out] pModel
  * @param[in,out] pszFname
- * @param[in,out] mMask  
+ * @param[in,out] mMask
  * @return int An integer error code
- * @remark errorcode = rLSwriteMPXFile(pModel,pszFname,mMask) 
- */    
+ * @remark errorcode = rLSwriteMPXFile(pModel,pszFname,mMask)
+ */
 SEXP rcLSwriteMPXFile(SEXP spModel,SEXP spszFname,SEXP smMask) {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   char *pszFname;
   int mMask;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -15543,19 +15543,19 @@ SEXP rcLSwriteMPXFile(SEXP spModel,SEXP spszFname,SEXP smMask) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));    
-  ibuf[3] = mMask = Rf_asInteger(smMask);   
 
-  CHECK_MODEL_ERROR;    
+  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));
+  ibuf[3] = mMask = Rf_asInteger(smMask);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
 
 
   // Get C pointers
@@ -15566,13 +15566,13 @@ SEXP rcLSwriteMPXFile(SEXP spModel,SEXP spszFname,SEXP smMask) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 /*
@@ -15582,22 +15582,22 @@ ErrorReturn:
  * @param[in,out] panNewRowIdx
  * @param[in,out] panNewColPos
  * @param[in,out] panNewRowPos
- * @param[in,out] nMode  
+ * @param[in,out] nMode
  * @return int An integer error code
- * @remark errorcode = rLSapplyLtf(pModel,panNewColIdx,panNewRowIdx,panNewColPos,panNewRowPos,nMode) 
- */    
+ * @remark errorcode = rLSapplyLtf(pModel,panNewColIdx,panNewRowIdx,panNewColPos,panNewRowPos,nMode)
+ */
 SEXP rcLSapplyLtf(SEXP spModel,SEXP spanNewColIdx,SEXP spanNewRowIdx,SEXP spanNewColPos,SEXP spanNewRowPos,SEXP snMode) {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int *panNewColIdx= NULL;
   int *panNewRowIdx= NULL;
   int *panNewColPos= NULL;
   int *panNewRowPos= NULL;
   int nMode;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -15606,29 +15606,29 @@ SEXP rcLSapplyLtf(SEXP spModel,SEXP spanNewColIdx,SEXP spanNewRowIdx,SEXP spanNe
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  MAKE_INT_ARRAY(panNewColIdx,spanNewColIdx);    
-  MAKE_INT_ARRAY(panNewRowIdx,spanNewRowIdx);    
-  MAKE_INT_ARRAY(panNewColPos,spanNewColPos);    
-  MAKE_INT_ARRAY(panNewRowPos,spanNewRowPos);    
-  ibuf[6] = nMode = Rf_asInteger(snMode);   
 
-  CHECK_MODEL_ERROR;    
+  MAKE_INT_ARRAY(panNewColIdx,spanNewColIdx);
+  MAKE_INT_ARRAY(panNewRowIdx,spanNewRowIdx);
+  MAKE_INT_ARRAY(panNewColPos,spanNewColPos);
+  MAKE_INT_ARRAY(panNewRowPos,spanNewRowPos);
+  ibuf[6] = nMode = Rf_asInteger(snMode);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
-  // Get C pointers    
+  // Get C pointers
   ivecptr[2] = (int*)panNewColIdx;
-      
+
   ivecptr[3] = (int*)panNewRowIdx;
-      
+
   ivecptr[4] = (int*)panNewColPos;
-      
+
   ivecptr[5] = (int*)panNewRowPos;
 
   *pnErrorCode = errorcode = LSapplyLtf(pModel
@@ -15641,31 +15641,31 @@ SEXP rcLSapplyLtf(SEXP spModel,SEXP spanNewColIdx,SEXP spanNewRowIdx,SEXP spanNe
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 
 /*
  * @brief LSbnbSolve
  * @param[in,out] pModel
- * @param[in,out] pszFname  
+ * @param[in,out] pszFname
  * @return int An integer error code
- * @remark errorcode = rLSbnbSolve(pModel,pszFname) 
- */    
+ * @remark errorcode = rLSbnbSolve(pModel,pszFname)
+ */
 SEXP rcLSbnbSolve(SEXP spModel,SEXP spszFname) {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   char *pszFname;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -15674,18 +15674,18 @@ SEXP rcLSbnbSolve(SEXP spModel,SEXP spszFname) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));   
 
-  CHECK_MODEL_ERROR;    
+  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
 
 
   // Get C pointers
@@ -15695,13 +15695,13 @@ SEXP rcLSbnbSolve(SEXP spModel,SEXP spszFname) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
-      
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 /*
@@ -15709,19 +15709,19 @@ ErrorReturn:
  * @param[in,out] pModel
  * @param[in,out] iRow
  * @param[in,out] padPrimal
- * @param[in,out] padSlacks  
+ * @param[in,out] padSlacks
  * @return int An integer error code
- * @remark errorcode,spadSlacks = rLScalcConFunc(pModel,iRow,padPrimal,padSlacks) 
- */    
+ * @remark errorcode,spadSlacks = rLScalcConFunc(pModel,iRow,padPrimal,padSlacks)
+ */
 SEXP rcLScalcConFunc(SEXP spModel,SEXP siRow,SEXP spadPrimal) {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int iRow;
   double *padPrimal= NULL;
   double *padSlacks= NULL;
-  
+
   SEXP      spadSlacks = R_NilValue;
   SEXP      sModel=spModel;
   int       *pnErrorCode;
@@ -15731,25 +15731,25 @@ SEXP rcLScalcConFunc(SEXP spModel,SEXP siRow,SEXP spadPrimal) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 2;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = iRow = Rf_asInteger(siRow);   
-  MAKE_REAL_ARRAY(padPrimal,spadPrimal); 
+
+  ibuf[2] = iRow = Rf_asInteger(siRow);
+  MAKE_REAL_ARRAY(padPrimal,spadPrimal);
   dvecptr[3] = padPrimal; //padPrimal
 
-  CHECK_MODEL_ERROR;    
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
-   
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
+
   PROTECT(spadSlacks = NEW_NUMERIC(m));
-  nProtect += 1;    
+  nProtect += 1;
   dvecptr[4] = padSlacks = NUMERIC_POINTER(spadSlacks); //padSlacks
-  
+
   *pnErrorCode = errorcode = LScalcConFunc(pModel
     ,ibuf[2] //iRow
     ,dvecptr[3] //*padPrimal
@@ -15758,15 +15758,15 @@ SEXP rcLScalcConFunc(SEXP spModel,SEXP siRow,SEXP spadPrimal) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spadSlacks);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 
@@ -15777,21 +15777,21 @@ ErrorReturn:
  * @param[in,out] padPrimal
  * @param[in,out] nParList
  * @param[in,out] paiParList
- * @param[in,out] padParGrad  
+ * @param[in,out] padParGrad
  * @return int An integer error code
- * @remark errorcode,padParGrad = rLScalcConGrad(pModel,irow,padPrimal,nParList,paiParList) 
- */    
+ * @remark errorcode,padParGrad = rLScalcConGrad(pModel,irow,padPrimal,nParList,paiParList)
+ */
 SEXP rcLScalcConGrad(SEXP spModel,SEXP sirow,SEXP spadPrimal,SEXP snParList,SEXP spaiParList) {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int irow;
   double *padPrimal= NULL;
   int nParList;
   int *paiParList= NULL;
   double *padParGrad= NULL;
-  
+
   SEXP spadParGrad = R_NilValue;
   SEXP      sModel=spModel;
   int       *pnErrorCode;
@@ -15801,29 +15801,29 @@ SEXP rcLScalcConGrad(SEXP spModel,SEXP sirow,SEXP spadPrimal,SEXP snParList,SEXP
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 2;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = irow = Rf_asInteger(sirow);    
-  ibuf[4] = nParList = Rf_asInteger(snParList);   
-  MAKE_REAL_ARRAY(padPrimal,spadPrimal); 
-  dvecptr[3] = padPrimal; //padPrimal  
-  MAKE_INT_ARRAY(paiParList,spaiParList); 
-  ivecptr[5] = paiParList; //paiParList
-  
-  CHECK_MODEL_ERROR;    
-  LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
 
-  // Get C pointers   
+  ibuf[2] = irow = Rf_asInteger(sirow);
+  ibuf[4] = nParList = Rf_asInteger(snParList);
+  MAKE_REAL_ARRAY(padPrimal,spadPrimal);
+  dvecptr[3] = padPrimal; //padPrimal
+  MAKE_INT_ARRAY(paiParList,spaiParList);
+  ivecptr[5] = paiParList; //paiParList
+
+  CHECK_MODEL_ERROR;
+  LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
+
+  // Get C pointers
   PROTECT(spadParGrad = NEW_NUMERIC(nParList));
-  nProtect += 1;    
+  nProtect += 1;
   dvecptr[6] = padParGrad = NUMERIC_POINTER(spadParGrad); //padParGrad
-  
+
   *pnErrorCode = errorcode = LScalcConGrad(pModel
     ,ibuf[2] //irow
     ,dvecptr[3] //*padPrimal
@@ -15834,32 +15834,32 @@ SEXP rcLScalcConGrad(SEXP spModel,SEXP sirow,SEXP spadPrimal,SEXP snParList,SEXP
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spadParGrad);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 /*
  * @brief LSwriteNLSolution
  * @param[in,out] pModel
- * @param[in,out] pszFname  
+ * @param[in,out] pszFname
  * @return int An integer error code
- * @remark errorcode = rLSwriteNLSolution(pModel,pszFname) 
- */    
+ * @remark errorcode = rLSwriteNLSolution(pModel,pszFname)
+ */
 SEXP rcLSwriteNLSolution(SEXP spModel,SEXP spszFname) {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   char *pszFname= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -15868,18 +15868,18 @@ SEXP rcLSwriteNLSolution(SEXP spModel,SEXP spszFname) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));   
 
-  CHECK_MODEL_ERROR;    
+  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
 
 
   // Get C pointers
@@ -15889,31 +15889,31 @@ SEXP rcLSwriteNLSolution(SEXP spModel,SEXP spszFname) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 /*
  * @brief LSwriteEnvParameter
  * @param[in,out] pEnv
- * @param[in,out] pszFname  
+ * @param[in,out] pszFname
  * @return int An integer error code
- * @remark errorcode = rLSwriteEnvParameter(pEnv,pszFname) 
- */    
+ * @remark errorcode = rLSwriteEnvParameter(pEnv,pszFname)
+ */
 SEXP rcLSwriteEnvParameter(SEXP spEnv,SEXP spszFname) {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   char *pszFname= NULL;
-  
-    
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -15922,12 +15922,12 @@ SEXP rcLSwriteEnvParameter(SEXP spEnv,SEXP spszFname) {
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));   
+
+  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));
 
   CHECK_ENV_ERROR;
 
@@ -15938,32 +15938,32 @@ SEXP rcLSwriteEnvParameter(SEXP spEnv,SEXP spszFname) {
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 /*
  * @brief LSreadCBFFile
  * @param[in,out] pModel
- * @param[in,out] pszFname  
+ * @param[in,out] pszFname
  * @return int An integer error code
- * @remark ErrorCode = rLSreadCBFFile(spModel,pszFname) 
+ * @remark ErrorCode = rLSreadCBFFile(spModel,pszFname)
  */
-SEXP rcLSreadCBFFile(SEXP spModel,SEXP spszFname)    
+SEXP rcLSreadCBFFile(SEXP spModel,SEXP spszFname)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   char *pszFname= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -15972,20 +15972,20 @@ SEXP rcLSreadCBFFile(SEXP spModel,SEXP spszFname)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-  
 
-    
+
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));   
 
-  CHECK_MODEL_ERROR;    
+  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
 
 
   // Get C pointers
@@ -15995,31 +15995,31 @@ SEXP rcLSreadCBFFile(SEXP spModel,SEXP spszFname)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSreadMPXFile
- * @param[in,out] pModel	
- * @param[in,out] pszFname  
+ * @param[in,out] pModel
+ * @param[in,out] pszFname
  * @return int An integer error code
- * @remark ErrorCode = rLSreadMPXFile(spModel	,pszFname) 
+ * @remark ErrorCode = rLSreadMPXFile(spModel	,pszFname)
  */
-SEXP rcLSreadMPXFile(SEXP spModel	,SEXP spszFname)    
+SEXP rcLSreadMPXFile(SEXP spModel	,SEXP spszFname)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   char *pszFname= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -16028,20 +16028,20 @@ SEXP rcLSreadMPXFile(SEXP spModel	,SEXP spszFname)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-  
 
-    
+
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));   
 
-  CHECK_MODEL_ERROR;    
+  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
 
 
   // Get C pointers
@@ -16051,31 +16051,31 @@ SEXP rcLSreadMPXFile(SEXP spModel	,SEXP spszFname)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSreadNLFile
  * @param[in,out] pModel
- * @param[in,out] pszFname  
+ * @param[in,out] pszFname
  * @return int An integer error code
- * @remark ErrorCode = rLSreadNLFile(spModel,pszFname) 
+ * @remark ErrorCode = rLSreadNLFile(spModel,pszFname)
  */
-SEXP rcLSreadNLFile(SEXP spModel,SEXP spszFname)    
+SEXP rcLSreadNLFile(SEXP spModel,SEXP spszFname)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   char *pszFname= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -16084,20 +16084,20 @@ SEXP rcLSreadNLFile(SEXP spModel,SEXP spszFname)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-  
 
-    
+
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));   
 
-  CHECK_MODEL_ERROR;    
+  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
 
 
   // Get C pointers
@@ -16107,33 +16107,33 @@ SEXP rcLSreadNLFile(SEXP spModel,SEXP spszFname)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSwriteDualLINDOFile
  * @param[in,out] pModel
  * @param[in,out] pszFname
- * @param[in,out] nObjSense  
+ * @param[in,out] nObjSense
  * @return int An integer error code
- * @remark ErrorCode = rLSwriteDualLINDOFile(spModel,pszFname,nObjSense) 
+ * @remark ErrorCode = rLSwriteDualLINDOFile(spModel,pszFname,nObjSense)
  */
-SEXP rcLSwriteDualLINDOFile(SEXP spModel,SEXP spszFname,SEXP snObjSense)    
+SEXP rcLSwriteDualLINDOFile(SEXP spModel,SEXP spszFname,SEXP snObjSense)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   char *pszFname= NULL;
   int nObjSense;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -16142,21 +16142,21 @@ SEXP rcLSwriteDualLINDOFile(SEXP spModel,SEXP spszFname,SEXP snObjSense)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-  
 
-    
+
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));    
-  ibuf[3] = nObjSense = Rf_asInteger(snObjSense);   
 
-  CHECK_MODEL_ERROR;    
+  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));
+  ibuf[3] = nObjSense = Rf_asInteger(snObjSense);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
 
 
   // Get C pointers
@@ -16167,33 +16167,33 @@ SEXP rcLSwriteDualLINDOFile(SEXP spModel,SEXP spszFname,SEXP snObjSense)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSgetGOPVariablePriority
  * @param[in,out] pModel
  * @param[in,out] ndxVar
- * @param[in,out] pnPriority  
+ * @param[in,out] pnPriority
  * @return int An integer error code
- * @remark ErrorCode,pnPriority = rLSgetGOPVariablePriority(spModel,ndxVar) 
+ * @remark ErrorCode,pnPriority = rLSgetGOPVariablePriority(spModel,ndxVar)
  */
-SEXP rcLSgetGOPVariablePriority(SEXP spModel,SEXP sndxVar)    
+SEXP rcLSgetGOPVariablePriority(SEXP spModel,SEXP sndxVar)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int ndxVar;
   int *pnPriority= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -16204,25 +16204,25 @@ SEXP rcLSgetGOPVariablePriority(SEXP spModel,SEXP sndxVar)
   int       nIdx, nProtect = 0;
   SEXP      spnPriority = R_NilValue;;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = ndxVar = Rf_asInteger(sndxVar);   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[2] = ndxVar = Rf_asInteger(sndxVar);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
 
-  // Get C pointers 
+
+  // Get C pointers
   PROTECT(spnPriority = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[3] = pnPriority = INTEGER_POINTER(spnPriority); //pnPriority
-  
+
   *pnErrorCode = errorcode = LSgetGOPVariablePriority(pModel
     ,ibuf[2] //ndxVar
     ,ivecptr[3]); //*pnPriority
@@ -16230,15 +16230,15 @@ SEXP rcLSgetGOPVariablePriority(SEXP spModel,SEXP sndxVar)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spnPriority);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 
@@ -16246,20 +16246,20 @@ ErrorReturn:
  * @brief LSsetXSolverLibrary
  * @param[in,out] pEnv
  * @param[in,out] mVendorId
- * @param[in,out] szLibrary  
+ * @param[in,out] szLibrary
  * @return int An integer error code
- * @remark ErrorCode = rLSsetXSolverLibrary(spEnv,mVendorId,szLibrary) 
+ * @remark ErrorCode = rLSsetXSolverLibrary(spEnv,mVendorId,szLibrary)
  */
-SEXP rcLSsetXSolverLibrary(SEXP spEnv,SEXP smVendorId,SEXP sszLibrary)    
+SEXP rcLSsetXSolverLibrary(SEXP spEnv,SEXP smVendorId,SEXP sszLibrary)
 {
   DCL_BUF(20);
   pLSenv     pEnv=NULL;
   prLSenv prEnv=NULL;
-  
+
   int mVendorId;
   char *szLibrary= NULL;
-  
-    
+
+
   SEXP      sEnv=spEnv;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -16268,15 +16268,15 @@ SEXP rcLSsetXSolverLibrary(SEXP spEnv,SEXP smVendorId,SEXP sszLibrary)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-  
 
-    
+
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = mVendorId = Rf_asInteger(smVendorId);    
-  sbuf[3] = szLibrary = (char *) CHAR(STRING_ELT(sszLibrary,0));   
+
+  ibuf[2] = mVendorId = Rf_asInteger(smVendorId);
+  sbuf[3] = szLibrary = (char *) CHAR(STRING_ELT(sszLibrary,0));
 
   CHECK_ENV_ERROR;
 
@@ -16288,33 +16288,33 @@ SEXP rcLSsetXSolverLibrary(SEXP spEnv,SEXP smVendorId,SEXP sszLibrary)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSsetGOPVariablePriority
  * @param[in,out] pModel
  * @param[in,out] ndxVar
- * @param[in,out] nPriority  
+ * @param[in,out] nPriority
  * @return int An integer error code
- * @remark ErrorCode = rLSsetGOPVariablePriority(spModel,ndxVar,nPriority) 
+ * @remark ErrorCode = rLSsetGOPVariablePriority(spModel,ndxVar,nPriority)
  */
-SEXP rcLSsetGOPVariablePriority(SEXP spModel,SEXP sndxVar,SEXP snPriority)    
+SEXP rcLSsetGOPVariablePriority(SEXP spModel,SEXP sndxVar,SEXP snPriority)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int ndxVar;
   int nPriority;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -16323,21 +16323,21 @@ SEXP rcLSsetGOPVariablePriority(SEXP spModel,SEXP sndxVar,SEXP snPriority)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-  
 
-    
+
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = ndxVar = Rf_asInteger(sndxVar);    
-  ibuf[3] = nPriority = Rf_asInteger(snPriority);   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[2] = ndxVar = Rf_asInteger(sndxVar);
+  ibuf[3] = nPriority = Rf_asInteger(snPriority);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
 
 
   // Get C pointers
@@ -16348,35 +16348,35 @@ SEXP rcLSsetGOPVariablePriority(SEXP spModel,SEXP sndxVar,SEXP snPriority)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSsetObjPoolParam
  * @param[in,out] pModel
  * @param[in,out] nObjIndex
  * @param[in,out] mInfo
- * @param[in,out] dValue  
+ * @param[in,out] dValue
  * @return int An integer error code
- * @remark ErrorCode = rLSsetObjPoolParam(spModel,nObjIndex,mInfo,dValue) 
+ * @remark ErrorCode = rLSsetObjPoolParam(spModel,nObjIndex,mInfo,dValue)
  */
-SEXP rcLSsetObjPoolParam(SEXP spModel,SEXP snObjIndex,SEXP smInfo,SEXP sdValue)    
+SEXP rcLSsetObjPoolParam(SEXP spModel,SEXP snObjIndex,SEXP smInfo,SEXP sdValue)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int nObjIndex;
   int mInfo;
   double dValue;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -16385,22 +16385,22 @@ SEXP rcLSsetObjPoolParam(SEXP spModel,SEXP snObjIndex,SEXP smInfo,SEXP sdValue)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-  
 
-    
+
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = nObjIndex = Rf_asInteger(snObjIndex);    
-  ibuf[3] = mInfo = Rf_asInteger(smInfo);    
-  dbuf[4] = dValue = Rf_asReal(sdValue);   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[2] = nObjIndex = Rf_asInteger(snObjIndex);
+  ibuf[3] = mInfo = Rf_asInteger(smInfo);
+  dbuf[4] = dValue = Rf_asReal(sdValue);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
 
 
   // Get C pointers
@@ -16412,33 +16412,33 @@ SEXP rcLSsetObjPoolParam(SEXP spModel,SEXP snObjIndex,SEXP smInfo,SEXP sdValue)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSsetSETSStatei
  * @param[in,out] pModel
  * @param[in,out] iSet
- * @param[in,out] mState  
+ * @param[in,out] mState
  * @return int An integer error code
- * @remark ErrorCode = rLSsetSETSStatei(spModel,iSet,mState) 
+ * @remark ErrorCode = rLSsetSETSStatei(spModel,iSet,mState)
  */
-SEXP rcLSsetSETSStatei(SEXP spModel,SEXP siSet,SEXP smState)    
+SEXP rcLSsetSETSStatei(SEXP spModel,SEXP siSet,SEXP smState)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int iSet;
   int mState;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -16447,21 +16447,21 @@ SEXP rcLSsetSETSStatei(SEXP spModel,SEXP siSet,SEXP smState)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-  
 
-    
+
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = iSet = Rf_asInteger(siSet);    
-  ibuf[3] = mState = Rf_asInteger(smState);   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[2] = iSet = Rf_asInteger(siSet);
+  ibuf[3] = mState = Rf_asInteger(smState);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
 
 
   // Get C pointers
@@ -16472,31 +16472,31 @@ SEXP rcLSsetSETSStatei(SEXP spModel,SEXP siSet,SEXP smState)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSremObjPool
  * @param[in,out] pModel
- * @param[in,out] nObjIndex  
+ * @param[in,out] nObjIndex
  * @return int An integer error code
- * @remark ErrorCode = rLSremObjPool(spModel,nObjIndex) 
+ * @remark ErrorCode = rLSremObjPool(spModel,nObjIndex)
  */
-SEXP rcLSremObjPool(SEXP spModel,SEXP snObjIndex)    
+SEXP rcLSremObjPool(SEXP spModel,SEXP snObjIndex)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int nObjIndex;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -16505,20 +16505,20 @@ SEXP rcLSremObjPool(SEXP spModel,SEXP snObjIndex)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-  
 
-    
+
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = nObjIndex = Rf_asInteger(snObjIndex);   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[2] = nObjIndex = Rf_asInteger(snObjIndex);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
 
 
   // Get C pointers
@@ -16528,35 +16528,35 @@ SEXP rcLSremObjPool(SEXP spModel,SEXP snObjIndex)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSrepairQterms
  * @param[in,out] pModel
  * @param[in,out] nCons
  * @param[in,out] paiCons
- * @param[in,out] paiType  
+ * @param[in,out] paiType
  * @return int An integer error code
- * @remark ErrorCode = rLSrepairQterms(spModel,nCons,paiCons,paiType) 
+ * @remark ErrorCode = rLSrepairQterms(spModel,nCons,paiCons,paiType)
  */
-SEXP rcLSrepairQterms(SEXP spModel,SEXP snCons,SEXP spaiCons,SEXP spaiType)    
+SEXP rcLSrepairQterms(SEXP spModel,SEXP snCons,SEXP spaiCons,SEXP spaiType)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int nCons;
   int *paiCons= NULL;
   int *paiType= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -16565,29 +16565,29 @@ SEXP rcLSrepairQterms(SEXP spModel,SEXP snCons,SEXP spaiCons,SEXP spaiType)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-  
 
-    
+
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = nCons = Rf_asInteger(snCons);    
-  MAKE_INT_ARRAY(paiCons,spaiCons);    
-  MAKE_INT_ARRAY(paiType,spaiType);   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[2] = nCons = Rf_asInteger(snCons);
+  MAKE_INT_ARRAY(paiCons,spaiCons);
+  MAKE_INT_ARRAY(paiType,spaiType);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
 
-  // Get C pointers    
+
+  // Get C pointers
   ivecptr[3] = (int*)paiCons;
-      
+
   ivecptr[4] = (int*)paiType;
-  
+
   *pnErrorCode = errorcode = LSrepairQterms(pModel
     ,ibuf[2] //nCons
     ,ivecptr[3] //*paiCons
@@ -16596,31 +16596,31 @@ SEXP rcLSrepairQterms(SEXP spModel,SEXP snCons,SEXP spaiCons,SEXP spaiType)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 /*
  * @brief LSloadLicenseString
  * @param[in,out] pEnv
  * @param[in,out] pszFname
- * @param[in,out] pachLicense  
+ * @param[in,out] pachLicense
  * @return int An integer error code
- * @remark ErrorCode, pachLicense = rLSloadLicenseString(pszFname) 
+ * @remark ErrorCode, pachLicense = rLSloadLicenseString(pszFname)
  */
-SEXP rcLSloadLicenseString(SEXP spszFname)    
+SEXP rcLSloadLicenseString(SEXP spszFname)
 {
   DCL_BUF(20);
-  
+
   char *pszFname= NULL;
   char *pachLicense= NULL;
-      
+
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
   SEXP      rList = R_NilValue;
@@ -16630,35 +16630,35 @@ SEXP rcLSloadLicenseString(SEXP spszFname)
   int       nIdx, nProtect = 0;
   SEXP      spachLicense = R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));    
+
+  sbuf[2] = pszFname = (char *) CHAR(STRING_ELT(spszFname,0));
 
   PROTECT(spachLicense = NEW_CHARACTER(1));
   nProtect += 1;
   pachLicense = (char *)malloc(sizeof(char)*(1024));
-  
-  // Get C pointers    
+
+  // Get C pointers
   svecptr[3] = (char*)pachLicense;
-  
+
   *pnErrorCode = errorcode = LSloadLicenseString(sbuf[2] //*pszFname
     ,svecptr[3]); //*pachLicense
 
   SET_STRING_ELT(spachLicense,0,mkChar(pachLicense));
 
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spachLicense);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 /*
@@ -16669,24 +16669,24 @@ SEXP rcLSloadLicenseString(SEXP spszFname)
  * @param[in,out] paiAlldiffL
  * @param[in,out] paiAlldiffU
  * @param[in,out] paiAlldiffBeg
- * @param[in,out] paiAlldiffVar  
+ * @param[in,out] paiAlldiffVar
  * @return int An integer error code
- * @remark ErrorCode = rLSloadALLDIFFData(spModel,nALLDIFF,paiAlldiffDim,paiAlldiffL,paiAlldiffU,paiAlldiffBeg,paiAlldiffVar) 
+ * @remark ErrorCode = rLSloadALLDIFFData(spModel,nALLDIFF,paiAlldiffDim,paiAlldiffL,paiAlldiffU,paiAlldiffBeg,paiAlldiffVar)
  */
-SEXP rcLSloadALLDIFFData(SEXP spModel,SEXP snALLDIFF,SEXP spaiAlldiffDim,SEXP spaiAlldiffL,SEXP spaiAlldiffU,SEXP spaiAlldiffBeg,SEXP spaiAlldiffVar)    
+SEXP rcLSloadALLDIFFData(SEXP spModel,SEXP snALLDIFF,SEXP spaiAlldiffDim,SEXP spaiAlldiffL,SEXP spaiAlldiffU,SEXP spaiAlldiffBeg,SEXP spaiAlldiffVar)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int nALLDIFF;
   int *paiAlldiffDim= NULL;
   int *paiAlldiffL= NULL;
   int *paiAlldiffU= NULL;
   int *paiAlldiffBeg= NULL;
   int *paiAlldiffVar= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -16695,38 +16695,38 @@ SEXP rcLSloadALLDIFFData(SEXP spModel,SEXP snALLDIFF,SEXP spaiAlldiffDim,SEXP sp
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-  
 
-    
+
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = nALLDIFF = Rf_asInteger(snALLDIFF);    
-  MAKE_INT_ARRAY(paiAlldiffDim,spaiAlldiffDim);    
-  MAKE_INT_ARRAY(paiAlldiffL,spaiAlldiffL);    
-  MAKE_INT_ARRAY(paiAlldiffU,spaiAlldiffU);    
-  MAKE_INT_ARRAY(paiAlldiffBeg,spaiAlldiffBeg);    
-  MAKE_INT_ARRAY(paiAlldiffVar,spaiAlldiffVar);   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[2] = nALLDIFF = Rf_asInteger(snALLDIFF);
+  MAKE_INT_ARRAY(paiAlldiffDim,spaiAlldiffDim);
+  MAKE_INT_ARRAY(paiAlldiffL,spaiAlldiffL);
+  MAKE_INT_ARRAY(paiAlldiffU,spaiAlldiffU);
+  MAKE_INT_ARRAY(paiAlldiffBeg,spaiAlldiffBeg);
+  MAKE_INT_ARRAY(paiAlldiffVar,spaiAlldiffVar);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
 
-  // Get C pointers    
+
+  // Get C pointers
   ivecptr[3] = (int*)paiAlldiffDim;
-      
+
   ivecptr[4] = (int*)paiAlldiffL;
-      
+
   ivecptr[5] = (int*)paiAlldiffU;
-      
+
   ivecptr[6] = (int*)paiAlldiffBeg;
-      
+
   ivecptr[7] = (int*)paiAlldiffVar;
-  
+
   *pnErrorCode = errorcode = LSloadALLDIFFData(pModel
     ,ibuf[2] //nALLDIFF
     ,ivecptr[3] //*paiAlldiffDim
@@ -16738,33 +16738,33 @@ SEXP rcLSloadALLDIFFData(SEXP spModel,SEXP snALLDIFF,SEXP spaiAlldiffDim,SEXP sp
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSloadIISPriorities
  * @param[in,out] pModel
  * @param[in,out] panRprior
- * @param[in,out] panCprior  
+ * @param[in,out] panCprior
  * @return int An integer error code
- * @remark ErrorCode = rLSloadIISPriorities(spModel,panRprior,panCprior) 
+ * @remark ErrorCode = rLSloadIISPriorities(spModel,panRprior,panCprior)
  */
-SEXP rcLSloadIISPriorities(SEXP spModel,SEXP spanRprior,SEXP spanCprior)    
+SEXP rcLSloadIISPriorities(SEXP spModel,SEXP spanRprior,SEXP spanCprior)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int *panRprior= NULL;
   int *panCprior= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -16773,28 +16773,28 @@ SEXP rcLSloadIISPriorities(SEXP spModel,SEXP spanRprior,SEXP spanCprior)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-  
 
-    
+
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  MAKE_INT_ARRAY(panRprior,spanRprior);    
-  MAKE_INT_ARRAY(panCprior,spanCprior);   
 
-  CHECK_MODEL_ERROR;    
+  MAKE_INT_ARRAY(panRprior,spanRprior);
+  MAKE_INT_ARRAY(panCprior,spanCprior);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
 
-  // Get C pointers    
+
+  // Get C pointers
   ivecptr[2] = (int*)panRprior;
-      
+
   ivecptr[3] = (int*)panCprior;
-  
+
   *pnErrorCode = errorcode = LSloadIISPriorities(pModel
     ,ivecptr[2] //*panRprior
     ,ivecptr[3]); //*panCprior
@@ -16802,14 +16802,14 @@ SEXP rcLSloadIISPriorities(SEXP spModel,SEXP spanRprior,SEXP spanCprior)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSloadNLPDense
@@ -16821,16 +16821,16 @@ ErrorReturn:
  * @param[in,out] pszVarTypes
  * @param[in,out] padX0
  * @param[in,out] padL
- * @param[in,out] padU  
+ * @param[in,out] padU
  * @return int An integer error code
- * @remark ErrorCode = rLSloadNLPDense(spModel,nCons,nVars,dObjSense,pszConTypes,pszVarTypes,padX0,padL,padU) 
+ * @remark ErrorCode = rLSloadNLPDense(spModel,nCons,nVars,dObjSense,pszConTypes,pszVarTypes,padX0,padL,padU)
  */
-SEXP rcLSloadNLPDense(SEXP spModel,SEXP snCons,SEXP snVars,SEXP sdObjSense,SEXP spszConTypes,SEXP spszVarTypes,SEXP spadX0,SEXP spadL,SEXP spadU)    
+SEXP rcLSloadNLPDense(SEXP spModel,SEXP snCons,SEXP snVars,SEXP sdObjSense,SEXP spszConTypes,SEXP spszVarTypes,SEXP spadX0,SEXP spadL,SEXP spadU)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int nCons;
   int nVars;
   int dObjSense;
@@ -16839,8 +16839,8 @@ SEXP rcLSloadNLPDense(SEXP spModel,SEXP snCons,SEXP snVars,SEXP sdObjSense,SEXP 
   double *padX0= NULL;
   double *padL= NULL;
   double *padU= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -16849,36 +16849,36 @@ SEXP rcLSloadNLPDense(SEXP spModel,SEXP snCons,SEXP snVars,SEXP sdObjSense,SEXP 
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-  
 
-    
+
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = nCons = Rf_asInteger(snCons);    
-  ibuf[3] = nVars = Rf_asInteger(snVars);    
-  ibuf[4] = dObjSense = Rf_asInteger(sdObjSense);    
-  sbuf[5] = pszConTypes = (char *) CHAR(STRING_ELT(spszConTypes,0));    
-  sbuf[6] = pszVarTypes = (char *) CHAR(STRING_ELT(spszVarTypes,0));    
-  MAKE_REAL_ARRAY(padX0,spadX0);    
-  MAKE_REAL_ARRAY(padL,spadL);    
-  MAKE_REAL_ARRAY(padU,spadU);   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[2] = nCons = Rf_asInteger(snCons);
+  ibuf[3] = nVars = Rf_asInteger(snVars);
+  ibuf[4] = dObjSense = Rf_asInteger(sdObjSense);
+  sbuf[5] = pszConTypes = (char *) CHAR(STRING_ELT(spszConTypes,0));
+  sbuf[6] = pszVarTypes = (char *) CHAR(STRING_ELT(spszVarTypes,0));
+  MAKE_REAL_ARRAY(padX0,spadX0);
+  MAKE_REAL_ARRAY(padL,spadL);
+  MAKE_REAL_ARRAY(padU,spadU);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
 
-  // Get C pointers    
-  dvecptr[7] = (double*)padX0;  
-      
-  dvecptr[8] = (double*)padL;  
-      
-  dvecptr[9] = (double*)padU;  
-  
+
+  // Get C pointers
+  dvecptr[7] = (double*)padX0;
+
+  dvecptr[8] = (double*)padL;
+
+  dvecptr[9] = (double*)padU;
+
   *pnErrorCode = errorcode = LSloadNLPDense(pModel
     ,ibuf[2] //nCons
     ,ibuf[3] //nVars
@@ -16892,33 +16892,33 @@ SEXP rcLSloadNLPDense(SEXP spModel,SEXP snCons,SEXP snVars,SEXP sdObjSense,SEXP 
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSloadSolutionAt
  * @param[in,out] pModel
  * @param[in,out] nObjIndex
- * @param[in,out] nSolIndex  
+ * @param[in,out] nSolIndex
  * @return int An integer error code
- * @remark ErrorCode = rLSloadSolutionAt(spModel,nObjIndex,nSolIndex) 
+ * @remark ErrorCode = rLSloadSolutionAt(spModel,nObjIndex,nSolIndex)
  */
-SEXP rcLSloadSolutionAt(SEXP spModel,SEXP snObjIndex,SEXP snSolIndex)    
+SEXP rcLSloadSolutionAt(SEXP spModel,SEXP snObjIndex,SEXP snSolIndex)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int nObjIndex;
   int nSolIndex;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -16927,21 +16927,21 @@ SEXP rcLSloadSolutionAt(SEXP spModel,SEXP snObjIndex,SEXP snSolIndex)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-  
 
-    
+
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = nObjIndex = Rf_asInteger(snObjIndex);    
-  ibuf[3] = nSolIndex = Rf_asInteger(snSolIndex);   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[2] = nObjIndex = Rf_asInteger(snObjIndex);
+  ibuf[3] = nSolIndex = Rf_asInteger(snSolIndex);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
 
 
   // Get C pointers
@@ -16952,31 +16952,31 @@ SEXP rcLSloadSolutionAt(SEXP spModel,SEXP snObjIndex,SEXP snSolIndex)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSmodifyObjConstant
  * @param[in,out] pModel
- * @param[in,out] dObjConst  
+ * @param[in,out] dObjConst
  * @return int An integer error code
- * @remark ErrorCode = rLSmodifyObjConstant(spModel,dObjConst) 
+ * @remark ErrorCode = rLSmodifyObjConstant(spModel,dObjConst)
  */
-SEXP rcLSmodifyObjConstant(SEXP spModel,SEXP sdObjConst)    
+SEXP rcLSmodifyObjConstant(SEXP spModel,SEXP sdObjConst)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   double dObjConst;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -16985,20 +16985,20 @@ SEXP rcLSmodifyObjConstant(SEXP spModel,SEXP sdObjConst)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-  
 
-    
+
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  dbuf[2] = dObjConst = Rf_asReal(sdObjConst);   
 
-  CHECK_MODEL_ERROR;    
+  dbuf[2] = dObjConst = Rf_asReal(sdObjConst);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
 
 
   // Get C pointers
@@ -17008,33 +17008,33 @@ SEXP rcLSmodifyObjConstant(SEXP spModel,SEXP sdObjConst)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSreadMPXStream
  * @param[in,out] pModel
  * @param[in,out] pszStream
- * @param[in,out] nStreamLen  
+ * @param[in,out] nStreamLen
  * @return int An integer error code
- * @remark ErrorCode = rLSreadMPXStream(spModel,pszStream,nStreamLen) 
+ * @remark ErrorCode = rLSreadMPXStream(spModel,pszStream,nStreamLen)
  */
-SEXP rcLSreadMPXStream(SEXP spModel,SEXP spszStream,SEXP snStreamLen)    
+SEXP rcLSreadMPXStream(SEXP spModel,SEXP spszStream,SEXP snStreamLen)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   char *pszStream= NULL;
   int nStreamLen;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -17043,21 +17043,21 @@ SEXP rcLSreadMPXStream(SEXP spModel,SEXP spszStream,SEXP snStreamLen)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-  
 
-    
+
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  sbuf[2] = pszStream = (char *) CHAR(STRING_ELT(spszStream,0));    
-  ibuf[3] = nStreamLen = Rf_asInteger(snStreamLen);   
 
-  CHECK_MODEL_ERROR;    
+  sbuf[2] = pszStream = (char *) CHAR(STRING_ELT(spszStream,0));
+  ibuf[3] = nStreamLen = Rf_asInteger(snStreamLen);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
 
 
   // Get C pointers
@@ -17068,34 +17068,34 @@ SEXP rcLSreadMPXStream(SEXP spModel,SEXP spszStream,SEXP snStreamLen)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 /*
  * @brief LSsetMIPCCStrategy
  * @param[in,out] pModel
  * @param[in,out] nRunId
- * @param[in,out] szParamFile  
+ * @param[in,out] szParamFile
  * @return int An integer error code
- * @remark ErrorCode = rLSsetMIPCCStrategy(spModel,nRunId,szParamFile) 
+ * @remark ErrorCode = rLSsetMIPCCStrategy(spModel,nRunId,szParamFile)
  */
-SEXP rcLSsetMIPCCStrategy(SEXP spModel,SEXP snRunId,SEXP sszParamFile)    
+SEXP rcLSsetMIPCCStrategy(SEXP spModel,SEXP snRunId,SEXP sszParamFile)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int nRunId;
   char *szParamFile= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -17104,21 +17104,21 @@ SEXP rcLSsetMIPCCStrategy(SEXP spModel,SEXP snRunId,SEXP sszParamFile)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-  
 
-    
+
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = nRunId = Rf_asInteger(snRunId);    
-  sbuf[3] = szParamFile = (char *) CHAR(STRING_ELT(sszParamFile,0));   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[2] = nRunId = Rf_asInteger(snRunId);
+  sbuf[3] = szParamFile = (char *) CHAR(STRING_ELT(sszParamFile,0));
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
 
 
   // Get C pointers
@@ -17126,36 +17126,36 @@ SEXP rcLSsetMIPCCStrategy(SEXP spModel,SEXP snRunId,SEXP sszParamFile)
     , NULL
     ,ibuf[2] //nRunId
     ,sbuf[3] //*szParamFile
-    , NULL); 
+    , NULL);
 
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSgetNextBestSol
  * @param[in,out] pModel
- * @param[in,out] pnModStatus  
+ * @param[in,out] pnModStatus
  * @return int An integer error code
- * @remark ErrorCode,pnModStatus = rLSgetNextBestSol(spModel) 
+ * @remark ErrorCode,pnModStatus = rLSgetNextBestSol(spModel)
  */
-SEXP rcLSgetNextBestSol(SEXP spModel)    
+SEXP rcLSgetNextBestSol(SEXP spModel)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int *pnModStatus= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -17164,61 +17164,61 @@ SEXP rcLSgetNextBestSol(SEXP spModel)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 2;
   int       nIdx, nProtect = 0;
-    
+
   SEXP spnModStatus= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
 
-  CHECK_MODEL_ERROR;    
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
 
-  // Get C pointers 
+
+  // Get C pointers
   PROTECT(spnModStatus = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[2] = pnModStatus = INTEGER_POINTER(spnModStatus); //pnModStatus
-  
+
   *pnErrorCode = errorcode = LSgetNextBestSol(pModel
     ,ivecptr[2]); //*pnModStatus
 
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spnModStatus);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSgetNnzData
  * @param[in,out] pModel
  * @param[in,out] mStat
- * @param[in,out] panOutput  
+ * @param[in,out] panOutput
  * @return int An integer error code
- * @remark ErrorCode,panOutput = rLSgetNnzData(spModel,mStat) 
+ * @remark ErrorCode,panOutput = rLSgetNnzData(spModel,mStat)
  */
-SEXP rcLSgetNnzData(SEXP spModel,SEXP smStat)    
+SEXP rcLSgetNnzData(SEXP spModel,SEXP smStat)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int mStat, nItems;
   int *panOutput= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -17227,21 +17227,21 @@ SEXP rcLSgetNnzData(SEXP spModel,SEXP smStat)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 2;
   int       nIdx, nProtect = 0;
-    
+
   SEXP spanOutput= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = mStat = Rf_asInteger(smStat);   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[2] = mStat = Rf_asInteger(smStat);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
    if (mStat==LS_IINFO_NZCINDEX||mStat==LS_IINFO_NZCRANK||mStat==LS_IINFO_NZCCOUNT) {
      nItems = n;
    } else if (mStat==LS_IINFO_NZRINDEX||mStat==LS_IINFO_NZRRANK||mStat==LS_IINFO_NZRCOUNT) {
@@ -17251,11 +17251,11 @@ SEXP rcLSgetNnzData(SEXP spModel,SEXP smStat)
      goto ErrorReturn;
    }
 
-  // Get C pointers 
+  // Get C pointers
   PROTECT(spanOutput = NEW_INTEGER(nItems));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[3] = panOutput = INTEGER_POINTER(spanOutput); //panOutput
-  
+
   *pnErrorCode = errorcode = LSgetNnzData(pModel
     ,ibuf[2] //mStat
     ,ivecptr[3]); //*panOutput
@@ -17263,34 +17263,34 @@ SEXP rcLSgetNnzData(SEXP spModel,SEXP smStat)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spanOutput);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSgetObjectiveRanges
  * @param[in,out] pModel
  * @param[in,out] padDec
- * @param[in,out] padInc  
+ * @param[in,out] padInc
  * @return int An integer error code
- * @remark ErrorCode,padDec,padInc = rLSgetObjectiveRanges(spModel) 
+ * @remark ErrorCode,padDec,padInc = rLSgetObjectiveRanges(spModel)
  */
-SEXP rcLSgetObjectiveRanges(SEXP spModel)    
+SEXP rcLSgetObjectiveRanges(SEXP spModel)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   double *padDec= NULL;
   double *padInc= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -17299,32 +17299,32 @@ SEXP rcLSgetObjectiveRanges(SEXP spModel)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 3;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spadDec= R_NilValue;
   SEXP spadInc= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
 
-  CHECK_MODEL_ERROR;    
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
 
-  // Get C pointers 
+
+  // Get C pointers
   PROTECT(spadDec = NEW_NUMERIC(n));
-  nProtect += 1;    
+  nProtect += 1;
   dvecptr[2] = padDec = NUMERIC_POINTER(spadDec); //padDec
-   
+
   PROTECT(spadInc = NEW_NUMERIC(n));
-  nProtect += 1;    
+  nProtect += 1;
   dvecptr[3] = padInc = NUMERIC_POINTER(spadInc); //padInc
-  
+
   *pnErrorCode = errorcode = LSgetObjectiveRanges(pModel
     ,dvecptr[2] //*padDec
     ,dvecptr[3]); //*padInc
@@ -17332,35 +17332,35 @@ SEXP rcLSgetObjectiveRanges(SEXP spModel)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spadDec);
     SET_VECTOR_ELT(rList, 2, spadInc);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSgetObjPoolNumSol
  * @param[in,out] pModel
  * @param[in,out] nObjIndex
- * @param[in,out] pNumSol  
+ * @param[in,out] pNumSol
  * @return int An integer error code
- * @remark ErrorCode,pNumSol = rLSgetObjPoolNumSol(spModel,nObjIndex) 
+ * @remark ErrorCode,pNumSol = rLSgetObjPoolNumSol(spModel,nObjIndex)
  */
-SEXP rcLSgetObjPoolNumSol(SEXP spModel,SEXP snObjIndex)    
+SEXP rcLSgetObjPoolNumSol(SEXP spModel,SEXP snObjIndex)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int nObjIndex;
   int *pNumSol= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -17369,28 +17369,28 @@ SEXP rcLSgetObjPoolNumSol(SEXP spModel,SEXP snObjIndex)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 2;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spNumSol= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = nObjIndex = Rf_asInteger(snObjIndex);   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[2] = nObjIndex = Rf_asInteger(snObjIndex);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
 
-  // Get C pointers 
+
+  // Get C pointers
   PROTECT(spNumSol = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[3] = pNumSol = INTEGER_POINTER(spNumSol); //pNumSol
-  
+
   *pnErrorCode = errorcode = LSgetObjPoolNumSol(pModel
     ,ibuf[2] //nObjIndex
     ,ivecptr[3]); //*pNumSol
@@ -17398,15 +17398,15 @@ SEXP rcLSgetObjPoolNumSol(SEXP spModel,SEXP snObjIndex)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spNumSol);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSgetPOSDData
@@ -17417,16 +17417,16 @@ ErrorReturn:
  * @param[in,out] paiPOSDbeg
  * @param[in,out] paiPOSDrowndx
  * @param[in,out] paiPOSDcolndx
- * @param[in,out] paiPOSDvarndx  
+ * @param[in,out] paiPOSDvarndx
  * @return int An integer error code
- * @remark ErrorCode,pinPOSD,paiPOSDdim,paiPOSDnnz,paiPOSDbeg,paiPOSDrowndx,paiPOSDcolndx,paiPOSDvarndx = rLSgetPOSDData(spModel) 
+ * @remark ErrorCode,pinPOSD,paiPOSDdim,paiPOSDnnz,paiPOSDbeg,paiPOSDrowndx,paiPOSDcolndx,paiPOSDvarndx = rLSgetPOSDData(spModel)
  */
-SEXP rcLSgetPOSDData(SEXP spModel)    
+SEXP rcLSgetPOSDData(SEXP spModel)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int *pinPOSD= NULL, i=0;
   int *paiPOSDdim= NULL;
   int *paiPOSDnnz= NULL;
@@ -17434,8 +17434,8 @@ SEXP rcLSgetPOSDData(SEXP spModel)
   int *paiPOSDrowndx= NULL;
   int *paiPOSDcolndx= NULL;
   int *paiPOSDvarndx= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -17444,7 +17444,7 @@ SEXP rcLSgetPOSDData(SEXP spModel)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 8;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spinPOSD= R_NilValue;
   SEXP spaiPOSDdim= R_NilValue;
   SEXP spaiPOSDnnz= R_NilValue;
@@ -17453,55 +17453,55 @@ SEXP rcLSgetPOSDData(SEXP spModel)
   SEXP spaiPOSDcolndx= R_NilValue;
   SEXP spaiPOSDvarndx= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
 
-  CHECK_MODEL_ERROR;    
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
   errorcode = LSgetPOSDData(pModel,&ibuf[2],NULL,NULL,NULL,NULL,NULL,NULL);
   if (errorcode) goto ErrorReturn;
 
-  // Get C pointers 
+  // Get C pointers
   PROTECT(spinPOSD = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[2] = pinPOSD = INTEGER_POINTER(spinPOSD); //pinPOSD
-   
+
   PROTECT(spaiPOSDdim = NEW_INTEGER(ibuf[2]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[3] = paiPOSDdim = INTEGER_POINTER(spaiPOSDdim); //paiPOSDdim
-   
+
   PROTECT(spaiPOSDnnz = NEW_INTEGER(ibuf[2]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[4] = paiPOSDnnz = INTEGER_POINTER(spaiPOSDnnz); //paiPOSDnnz
-   
+
   PROTECT(spaiPOSDbeg = NEW_INTEGER(ibuf[2]+1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[5] = paiPOSDbeg = INTEGER_POINTER(spaiPOSDbeg); //paiPOSDbeg
-  
+
   errorcode = LSgetPOSDData(pModel,&ibuf[2],ivecptr[3],ivecptr[4],ivecptr[5],NULL,NULL,NULL);
   if (errorcode) goto ErrorReturn;
   ibuf[4]=0;
   for (i=0; i<ibuf[4]; i++)
     ibuf[4]+=ivecptr[4][i];
-  
+
   PROTECT(spaiPOSDrowndx = NEW_INTEGER(ibuf[4]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[6] = paiPOSDrowndx = INTEGER_POINTER(spaiPOSDrowndx); //paiPOSDrowndx
-   
+
   PROTECT(spaiPOSDcolndx = NEW_INTEGER(ibuf[4]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[7] = paiPOSDcolndx = INTEGER_POINTER(spaiPOSDcolndx); //paiPOSDcolndx
-   
+
   PROTECT(spaiPOSDvarndx = NEW_INTEGER(ibuf[4]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[8] = paiPOSDvarndx = INTEGER_POINTER(spaiPOSDvarndx); //paiPOSDvarndx
-  
+
   *pnErrorCode = errorcode = LSgetPOSDData(pModel
     ,ivecptr[2] //*pinPOSD
     ,ivecptr[3] //*paiPOSDdim
@@ -17514,8 +17514,8 @@ SEXP rcLSgetPOSDData(SEXP spModel)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spinPOSD);
@@ -17525,10 +17525,10 @@ ErrorReturn:
     SET_VECTOR_ELT(rList, 5, spaiPOSDrowndx);
     SET_VECTOR_ELT(rList, 6, spaiPOSDcolndx);
     SET_VECTOR_ELT(rList, 7, spaiPOSDvarndx);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSgetPOSDDatai
@@ -17538,24 +17538,24 @@ ErrorReturn:
  * @param[in,out] piPOSDnnz
  * @param[in,out] paiPOSDrowndx
  * @param[in,out] paiPOSDcolndx
- * @param[in,out] paiPOSDvarndx  
+ * @param[in,out] paiPOSDvarndx
  * @return int An integer error code
- * @remark ErrorCode,piPOSDdim,piPOSDnnz,paiPOSDrowndx,paiPOSDcolndx,paiPOSDvarndx = rLSgetPOSDDatai(spModel,iPOSD) 
+ * @remark ErrorCode,piPOSDdim,piPOSDnnz,paiPOSDrowndx,paiPOSDcolndx,paiPOSDvarndx = rLSgetPOSDDatai(spModel,iPOSD)
  */
-SEXP rcLSgetPOSDDatai(SEXP spModel,SEXP siPOSD)    
+SEXP rcLSgetPOSDDatai(SEXP spModel,SEXP siPOSD)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int iPOSD;
   int *piPOSDdim= NULL;
   int *piPOSDnnz= NULL;
   int *paiPOSDrowndx= NULL;
   int *paiPOSDcolndx= NULL;
   int *paiPOSDvarndx= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -17564,49 +17564,49 @@ SEXP rcLSgetPOSDDatai(SEXP spModel,SEXP siPOSD)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 6;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spiPOSDdim= R_NilValue;
   SEXP spiPOSDnnz= R_NilValue;
   SEXP spaiPOSDrowndx= R_NilValue;
   SEXP spaiPOSDcolndx= R_NilValue;
   SEXP spaiPOSDvarndx= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = iPOSD = Rf_asInteger(siPOSD);   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[2] = iPOSD = Rf_asInteger(siPOSD);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
   errorcode = LSgetPOSDDatai(pModel,ibuf[2],&ibuf[3],&ibuf[4],NULL,NULL,NULL);
   if (errorcode) goto ErrorReturn;
 
-  // Get C pointers 
+  // Get C pointers
   PROTECT(spiPOSDdim = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[3] = piPOSDdim = INTEGER_POINTER(spiPOSDdim); //piPOSDdim
-   
+
   PROTECT(spiPOSDnnz = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[4] = piPOSDnnz = INTEGER_POINTER(spiPOSDnnz); //piPOSDnnz
-   
+
   PROTECT(spaiPOSDrowndx = NEW_INTEGER(ibuf[4]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[5] = paiPOSDrowndx = INTEGER_POINTER(spaiPOSDrowndx); //paiPOSDrowndx
-   
+
   PROTECT(spaiPOSDcolndx = NEW_INTEGER(ibuf[4]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[6] = paiPOSDcolndx = INTEGER_POINTER(spaiPOSDcolndx); //paiPOSDcolndx
-   
+
   PROTECT(spaiPOSDvarndx = NEW_INTEGER(ibuf[4]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[7] = paiPOSDvarndx = INTEGER_POINTER(spaiPOSDvarndx); //paiPOSDvarndx
-  
+
   *pnErrorCode = errorcode = LSgetPOSDDatai(pModel
     ,ibuf[2] //iPOSD
     ,ivecptr[3] //*piPOSDdim
@@ -17618,8 +17618,8 @@ SEXP rcLSgetPOSDDatai(SEXP spModel,SEXP siPOSD)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spiPOSDdim);
@@ -17627,31 +17627,31 @@ ErrorReturn:
     SET_VECTOR_ELT(rList, 3, spaiPOSDrowndx);
     SET_VECTOR_ELT(rList, 4, spaiPOSDcolndx);
     SET_VECTOR_ELT(rList, 5, spaiPOSDvarndx);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSgetProgressInfo
  * @param[in,out] pModel
  * @param[in,out] nLocation
  * @param[in,out] nQuery
- * @param[in,out] pvValue  
+ * @param[in,out] pvValue
  * @return int An integer error code
- * @remark ErrorCode,pvValue = rLSgetProgressInfo(spModel,nLocation,nQuery) 
+ * @remark ErrorCode,pvValue = rLSgetProgressInfo(spModel,nLocation,nQuery)
  */
-SEXP rcLSgetProgressIInfo(SEXP spModel,SEXP snLocation,SEXP snQuery)    
+SEXP rcLSgetProgressIInfo(SEXP spModel,SEXP snLocation,SEXP snQuery)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int nLocation;
   int nQuery;
   int *pvValue= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -17660,30 +17660,30 @@ SEXP rcLSgetProgressIInfo(SEXP spModel,SEXP snLocation,SEXP snQuery)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 2;
   int       nIdx, nProtect = 0;
-  
+
 
   SEXP spvValue= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = nLocation = Rf_asInteger(snLocation);    
-  ibuf[3] = nQuery = Rf_asInteger(snQuery);   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[2] = nLocation = Rf_asInteger(snLocation);
+  ibuf[3] = nQuery = Rf_asInteger(snQuery);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
 
-  // Get C pointers 
+
+  // Get C pointers
   PROTECT(spvValue = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[4] = pvValue = INTEGER_POINTER(spvValue); //pvValue
-  
+
   *pnErrorCode = errorcode = LSgetProgressInfo(pModel
     ,ibuf[2] //nLocation
     ,ibuf[3] //nQuery
@@ -17692,14 +17692,14 @@ SEXP rcLSgetProgressIInfo(SEXP spModel,SEXP snLocation,SEXP snQuery)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
-  SET_VECTOR_ELT(rList, 0, spnErrorCode);  
+  SET_UP_LIST;
+
+  SET_VECTOR_ELT(rList, 0, spnErrorCode);
   SET_VECTOR_ELT(rList, 1, spvValue);
-  
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 /*
@@ -17707,21 +17707,21 @@ ErrorReturn:
  * @param[in,out] pModel
  * @param[in,out] nLocation
  * @param[in,out] nQuery
- * @param[in,out] pvValue  
+ * @param[in,out] pvValue
  * @return int An integer error code
- * @remark ErrorCode,pvValue = rLSgetProgressInfo(spModel,nLocation,nQuery) 
+ * @remark ErrorCode,pvValue = rLSgetProgressInfo(spModel,nLocation,nQuery)
  */
-SEXP rcLSgetProgressDInfo(SEXP spModel,SEXP snLocation,SEXP snQuery)    
+SEXP rcLSgetProgressDInfo(SEXP spModel,SEXP snLocation,SEXP snQuery)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int nLocation;
   int nQuery;
   double *pvValue= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -17730,30 +17730,30 @@ SEXP rcLSgetProgressDInfo(SEXP spModel,SEXP snLocation,SEXP snQuery)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 2;
   int       nIdx, nProtect = 0;
-  
+
 
   SEXP spvValue= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = nLocation = Rf_asInteger(snLocation);    
-  ibuf[3] = nQuery = Rf_asInteger(snQuery);   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[2] = nLocation = Rf_asInteger(snLocation);
+  ibuf[3] = nQuery = Rf_asInteger(snQuery);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
 
-  // Get C pointers 
+
+  // Get C pointers
   PROTECT(spvValue = NEW_NUMERIC(1));
-  nProtect += 1;    
+  nProtect += 1;
   dvecptr[4] = pvValue = NUMERIC_POINTER(spvValue); //pvValue
-  
+
   *pnErrorCode = errorcode = LSgetProgressInfo(pModel
     ,ibuf[2] //nLocation
     ,ibuf[3] //nQuery
@@ -17762,31 +17762,31 @@ SEXP rcLSgetProgressDInfo(SEXP spModel,SEXP snLocation,SEXP snQuery)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
-  SET_VECTOR_ELT(rList, 0, spnErrorCode);  
+  SET_UP_LIST;
+
+  SET_VECTOR_ELT(rList, 0, spnErrorCode);
   SET_VECTOR_ELT(rList, 1, spvValue);
-  
+
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 /*
  * @brief LSgetObjective
  * @param[in,out] pModel
  * @param[in,out] pdObj
  * @return int An integer error code
- * @remark ErrorCode,pdObj = rLSgetObjective(spModel) 
+ * @remark ErrorCode,pdObj = rLSgetObjective(spModel)
  */
-SEXP rcLSgetObjective(SEXP spModel)    
+SEXP rcLSgetObjective(SEXP spModel)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   double *pdObj= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -17795,25 +17795,25 @@ SEXP rcLSgetObjective(SEXP spModel)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 2;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spdObj= R_NilValue;
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
 
-  CHECK_MODEL_ERROR;    
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
 
-  // Get C pointers 
+
+  // Get C pointers
   PROTECT(spdObj = NEW_NUMERIC(n));
-  nProtect += 1;    
-  dvecptr[2] = pdObj = NUMERIC_POINTER(spdObj); //pdObj  
-  
+  nProtect += 1;
+  dvecptr[2] = pdObj = NUMERIC_POINTER(spdObj); //pdObj
+
   *pnErrorCode = errorcode = LSgetObjective(pModel
     ,dvecptr[2] //*pdObj
     );
@@ -17821,35 +17821,35 @@ SEXP rcLSgetObjective(SEXP spModel)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spdObj);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 
   /*
  * @brief LScalcObjFunc
  * @param[in,out] pModel
- * @param[in,out] pdObjval  
+ * @param[in,out] pdObjval
  * @return int An integer error code
- * @remark ErrorCode,pdObjval = rLScalcObjFunc(spModel,padPrimal) 
+ * @remark ErrorCode,pdObjval = rLScalcObjFunc(spModel,padPrimal)
  */
-SEXP rcLScalcObjFunc(SEXP spModel,SEXP spadPrimal)    
+SEXP rcLScalcObjFunc(SEXP spModel,SEXP spadPrimal)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   double *padPrimal= NULL;
   double *pdObjval= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -17858,27 +17858,27 @@ SEXP rcLScalcObjFunc(SEXP spModel,SEXP spadPrimal)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 3;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spdObjval= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
 
-  CHECK_MODEL_ERROR;    
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
   MAKE_REAL_ARRAY(padPrimal,spadPrimal);
   dvecptr[2] = padPrimal;
-   
+
   PROTECT(spdObjval = NEW_NUMERIC(1));
-  nProtect += 1;    
+  nProtect += 1;
   dvecptr[3] = pdObjval = NUMERIC_POINTER(spdObjval); //pdObjval
-  
+
   *pnErrorCode = errorcode = LScalcObjFunc(pModel
     ,dvecptr[2] //*padPrimal
     ,dvecptr[3]); //*pdObjval
@@ -17886,15 +17886,15 @@ SEXP rcLScalcObjFunc(SEXP spModel,SEXP spadPrimal)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spdObjval);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
@@ -17903,22 +17903,22 @@ ErrorReturn:
  * @param[in,out] padPrimal
  * @param[in,out] nParList
  * @param[in,out] paiParList
- * @param[in,out] padParGrad  
+ * @param[in,out] padParGrad
  * @return int An integer error code
- * @remark ErrorCode,padParGrad = rLScalcObjGrad(spModel,padPrimal,nParList,paiParList) 
+ * @remark ErrorCode,padParGrad = rLScalcObjGrad(spModel,padPrimal,nParList,paiParList)
  */
-SEXP rcLScalcObjGrad(SEXP spModel,SEXP spadPrimal,SEXP snParList, SEXP spaiParList)    
+SEXP rcLScalcObjGrad(SEXP spModel,SEXP spadPrimal,SEXP snParList, SEXP spaiParList)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   double *padPrimal= NULL;
   int nParList;
   int *paiParList= NULL;
   double *padParGrad= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -17927,29 +17927,29 @@ SEXP rcLScalcObjGrad(SEXP spModel,SEXP spadPrimal,SEXP snParList, SEXP spaiParLi
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 2;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spadParGrad= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[3] = nParList = Rf_asInteger(snParList);   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[3] = nParList = Rf_asInteger(snParList);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
   MAKE_REAL_ARRAY(padPrimal,spadPrimal);
   dvecptr[2] = padPrimal;
   MAKE_INT_ARRAY(paiParList,spaiParList);
   ivecptr[4] = paiParList;
-      
+
   PROTECT(spadParGrad = NEW_NUMERIC(nParList));
-  nProtect += 1;    
+  nProtect += 1;
   dvecptr[5] = padParGrad = NUMERIC_POINTER(spadParGrad); //padParGrad
-  
+
   *pnErrorCode = errorcode = LScalcObjGrad(pModel
     ,dvecptr[2] //*padPrimal
     ,ibuf[3] //nParList
@@ -17959,15 +17959,15 @@ SEXP rcLScalcObjGrad(SEXP spModel,SEXP spadPrimal,SEXP snParList, SEXP spaiParLi
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spadParGrad);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
@@ -17975,21 +17975,21 @@ ErrorReturn:
  * @param[in,out] pModel
  * @param[in,out] nCons
  * @param[in,out] paiCons
- * @param[in,out] paiType  
+ * @param[in,out] paiType
  * @return int An integer error code
- * @remark ErrorCode,paiType = rLScheckQterms(spModel,nCons,paiCons) 
+ * @remark ErrorCode,paiType = rLScheckQterms(spModel,nCons,paiCons)
  */
-SEXP rcLScheckQterms(SEXP spModel,SEXP snCons,SEXP spaiCons)    
+SEXP rcLScheckQterms(SEXP spModel,SEXP snCons,SEXP spaiCons)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int nCons;
   int *paiCons= NULL;
   int *paiType= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -17998,31 +17998,31 @@ SEXP rcLScheckQterms(SEXP spModel,SEXP snCons,SEXP spaiCons)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 2;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spaiType= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = nCons = Rf_asInteger(snCons);   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[2] = nCons = Rf_asInteger(snCons);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
   MAKE_INT_ARRAY(paiCons,spaiCons);
-  
 
 
-  // Get C pointers 
+
+  // Get C pointers
   ivecptr[3] = paiCons; //paiCons
-   
+
   PROTECT(spaiType = NEW_INTEGER(nCons));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[4] = paiType = INTEGER_POINTER(spaiType); //paiType
-  
+
   *pnErrorCode = errorcode = LScheckQterms(pModel
     ,ibuf[2] //nCons
     ,ivecptr[3] //*paiCons
@@ -18031,15 +18031,15 @@ SEXP rcLScheckQterms(SEXP spModel,SEXP snCons,SEXP spaiCons)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spaiType);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
@@ -18049,23 +18049,23 @@ ErrorReturn:
  * @param[in,out] panNewColIdx
  * @param[in,out] panNewRowIdx
  * @param[in,out] panNewColPos
- * @param[in,out] panNewRowPos  
+ * @param[in,out] panNewRowPos
  * @return int An integer error code
- * @remark ErrorCode,pnBlock,panNewColIdx,panNewRowIdx,panNewColPos,panNewRowPos = rLSdisplayBlockStructure(spModel) 
+ * @remark ErrorCode,pnBlock,panNewColIdx,panNewRowIdx,panNewColPos,panNewRowPos = rLSdisplayBlockStructure(spModel)
  */
-SEXP rcLSdisplayBlockStructure(SEXP spModel)    
+SEXP rcLSdisplayBlockStructure(SEXP spModel)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int *pnBlock= NULL;
   int *panNewColIdx= NULL;
   int *panNewRowIdx= NULL;
   int *panNewColPos= NULL;
   int *panNewRowPos= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -18074,51 +18074,51 @@ SEXP rcLSdisplayBlockStructure(SEXP spModel)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 6;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spnBlock= R_NilValue;
   SEXP spanNewColIdx= R_NilValue;
   SEXP spanNewRowIdx= R_NilValue;
   SEXP spanNewColPos= R_NilValue;
   SEXP spanNewRowPos= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
 
-  CHECK_MODEL_ERROR;    
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
-  
-  // Get C pointers 
+
+
+  // Get C pointers
   PROTECT(spnBlock = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[2] = pnBlock = INTEGER_POINTER(spnBlock); //pnBlock
-  
-  *pnErrorCode = errorcode = LSdisplayBlockStructure(pModel,ivecptr[2],ivecptr[3],ivecptr[4],ivecptr[5],ivecptr[6]); 
-  if (errorcode) goto ErrorReturn;  
+
+  *pnErrorCode = errorcode = LSdisplayBlockStructure(pModel,ivecptr[2],ivecptr[3],ivecptr[4],ivecptr[5],ivecptr[6]);
+  if (errorcode) goto ErrorReturn;
   ibuf[2] = *ivecptr[2];
-   
+
   PROTECT(spanNewColIdx = NEW_INTEGER(n));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[3] = panNewColIdx = INTEGER_POINTER(spanNewColIdx); //panNewColIdx
-   
+
   PROTECT(spanNewRowIdx = NEW_INTEGER(m));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[4] = panNewRowIdx = INTEGER_POINTER(spanNewRowIdx); //panNewRowIdx
-   
+
   PROTECT(spanNewColPos = NEW_INTEGER(n));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[5] = panNewColPos = INTEGER_POINTER(spanNewColPos); //panNewColPos
-   
+
   PROTECT(spanNewRowPos = NEW_INTEGER(m));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[6] = panNewRowPos = INTEGER_POINTER(spanNewRowPos); //panNewRowPos
-  
+
   *pnErrorCode = errorcode = LSdisplayBlockStructure(pModel
     ,ivecptr[2] //*pnBlock
     ,ivecptr[3] //*panNewColIdx
@@ -18129,8 +18129,8 @@ SEXP rcLSdisplayBlockStructure(SEXP spModel)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spnBlock);
@@ -18138,10 +18138,10 @@ ErrorReturn:
     SET_VECTOR_ELT(rList, 3, spanNewRowIdx);
     SET_VECTOR_ELT(rList, 4, spanNewColPos);
     SET_VECTOR_ELT(rList, 5, spanNewRowPos);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
@@ -18152,24 +18152,24 @@ ErrorReturn:
  * @param[in,out] padY
  * @param[in,out] pcXnz
  * @param[in,out] paiX
- * @param[in,out] padX  
+ * @param[in,out] padX
  * @return int An integer error code
- * @remark ErrorCode,pcXnz,paiX,padX = rLSdoBTRAN(spModel,spcYnz,spaiY,spadY) 
+ * @remark ErrorCode,pcXnz,paiX,padX = rLSdoBTRAN(spModel,spcYnz,spaiY,spadY)
  */
-SEXP rcLSdoBTRAN(SEXP spModel,SEXP spcYnz,SEXP spaiY,SEXP spadY)    
+SEXP rcLSdoBTRAN(SEXP spModel,SEXP spcYnz,SEXP spaiY,SEXP spadY)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int *pcYnz= NULL, i;
   int *paiY= NULL;
   double *padY= NULL;
   int *pcXnz= NULL;
   int *paiX= NULL;
   double *padX= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -18178,35 +18178,35 @@ SEXP rcLSdoBTRAN(SEXP spModel,SEXP spcYnz,SEXP spaiY,SEXP spadY)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 4;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spcXnz= R_NilValue;
   SEXP spaiX= R_NilValue;
   SEXP spadX= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
 
-  CHECK_MODEL_ERROR;    
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
   MAKE_INT_ARRAY(pcYnz,spcYnz);
   MAKE_INT_ARRAY(paiY,spaiY);
   MAKE_REAL_ARRAY(padY,spadY);
 
 
-  // Get C pointers 
+  // Get C pointers
   ivecptr[2] = pcYnz; //pcYnz
-   
+
   ivecptr[3] = paiY; //paiY
-   
+
   dvecptr[4] = padY; //padY
-   
+
   PROTECT(spcXnz = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[5] = pcXnz = INTEGER_POINTER(spcXnz); //pcXnz
   ivecptr[8] = malloc(m*sizeof(int));
   dvecptr[9] = malloc(m*sizeof(double));
@@ -18216,36 +18216,36 @@ SEXP rcLSdoBTRAN(SEXP spModel,SEXP spcYnz,SEXP spaiY,SEXP spadY)
     ,dvecptr[4] //*padY
     ,ivecptr[5] //*pcXnz
     ,ivecptr[8] //*paiX
-    ,dvecptr[9]); //*padX  
-  if (errorcode) goto ErrorReturn;  
+    ,dvecptr[9]); //*padX
+  if (errorcode) goto ErrorReturn;
   PROTECT(spaiX = NEW_INTEGER(*pcXnz));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[6] = paiX = INTEGER_POINTER(spaiX); //paiX
-   
+
   PROTECT(spadX = NEW_NUMERIC(*pcXnz));
-  nProtect += 1;    
+  nProtect += 1;
   dvecptr[7] = padX = NUMERIC_POINTER(spadX); //padX
-  
+
   for (i=0; i<*pcXnz; i++) {
     paiX[i] = ivecptr[8][i];
     padX[i] = dvecptr[9][i];
   }
-  
+
 ErrorReturn:
   if (ivecptr[8]) free(ivecptr[8]);
   if (dvecptr[9]) free(dvecptr[9]);
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spcXnz);
     SET_VECTOR_ELT(rList, 2, spaiX);
     SET_VECTOR_ELT(rList, 3, spadX);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
@@ -18256,24 +18256,24 @@ ErrorReturn:
  * @param[in,out] padY
  * @param[in,out] pcXnz
  * @param[in,out] paiX
- * @param[in,out] padX  
+ * @param[in,out] padX
  * @return int An integer error code
- * @remark ErrorCode,pcXnz,paiX,padX = rLSdoFTRAN(spModel,spcYnz,spaiY,spadY) 
+ * @remark ErrorCode,pcXnz,paiX,padX = rLSdoFTRAN(spModel,spcYnz,spaiY,spadY)
  */
-SEXP rcLSdoFTRAN(SEXP spModel,SEXP spcYnz,SEXP spaiY,SEXP spadY)    
+SEXP rcLSdoFTRAN(SEXP spModel,SEXP spcYnz,SEXP spaiY,SEXP spadY)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int *pcYnz= NULL, i;
   int *paiY= NULL;
   double *padY= NULL;
   int *pcXnz= NULL;
   int *paiX= NULL;
   double *padX= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -18282,35 +18282,35 @@ SEXP rcLSdoFTRAN(SEXP spModel,SEXP spcYnz,SEXP spaiY,SEXP spadY)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 4;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spcXnz= R_NilValue;
   SEXP spaiX= R_NilValue;
   SEXP spadX= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
 
-  CHECK_MODEL_ERROR;    
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
   MAKE_INT_ARRAY(pcYnz,spcYnz);
   MAKE_INT_ARRAY(paiY,spaiY);
   MAKE_REAL_ARRAY(padY,spadY);
 
 
-  // Get C pointers 
+  // Get C pointers
   ivecptr[2] = pcYnz; //pcYnz
-   
+
   ivecptr[3] = paiY; //paiY
-   
+
   dvecptr[4] = padY; //padY
-   
+
   PROTECT(spcXnz = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[5] = pcXnz = INTEGER_POINTER(spcXnz); //pcXnz
   ivecptr[8] = malloc(m*sizeof(int));
   dvecptr[9] = malloc(m*sizeof(double));
@@ -18320,36 +18320,36 @@ SEXP rcLSdoFTRAN(SEXP spModel,SEXP spcYnz,SEXP spaiY,SEXP spadY)
     ,dvecptr[4] //*padY
     ,ivecptr[5] //*pcXnz
     ,ivecptr[8] //*paiX
-    ,dvecptr[9]); //*padX  
-  if (errorcode) goto ErrorReturn;  
+    ,dvecptr[9]); //*padX
+  if (errorcode) goto ErrorReturn;
   PROTECT(spaiX = NEW_INTEGER(*pcXnz));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[6] = paiX = INTEGER_POINTER(spaiX); //paiX
-   
+
   PROTECT(spadX = NEW_NUMERIC(*pcXnz));
-  nProtect += 1;    
+  nProtect += 1;
   dvecptr[7] = padX = NUMERIC_POINTER(spadX); //padX
-  
+
   for (i=0; i<*pcXnz; i++) {
     paiX[i] = ivecptr[8][i];
     padX[i] = dvecptr[9][i];
-  }  
+  }
 
 ErrorReturn:
   if (ivecptr[8]) free(ivecptr[8]);
   if (dvecptr[9]) free(dvecptr[9]);
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spcXnz);
     SET_VECTOR_ELT(rList, 2, spaiX);
     SET_VECTOR_ELT(rList, 3, spadX);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
@@ -18358,22 +18358,22 @@ ErrorReturn:
  * @param[in,out] panNewColIdx
  * @param[in,out] panNewRowIdx
  * @param[in,out] panNewColPos
- * @param[in,out] panNewRowPos  
+ * @param[in,out] panNewRowPos
  * @return int An integer error code
- * @remark ErrorCode,panNewColIdx,panNewRowIdx,panNewColPos,panNewRowPos = rLSfindLtf(spModel) 
+ * @remark ErrorCode,panNewColIdx,panNewRowIdx,panNewColPos,panNewRowPos = rLSfindLtf(spModel)
  */
-SEXP rcLSfindLtf(SEXP spModel)    
+SEXP rcLSfindLtf(SEXP spModel)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int *panNewColIdx= NULL;
   int *panNewRowIdx= NULL;
   int *panNewColPos= NULL;
   int *panNewRowPos= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -18382,42 +18382,42 @@ SEXP rcLSfindLtf(SEXP spModel)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 5;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spanNewColIdx= R_NilValue;
   SEXP spanNewRowIdx= R_NilValue;
   SEXP spanNewColPos= R_NilValue;
   SEXP spanNewRowPos= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
 
-  CHECK_MODEL_ERROR;    
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
 
-  // Get C pointers 
+
+  // Get C pointers
   PROTECT(spanNewColIdx = NEW_INTEGER(n));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[2] = panNewColIdx = INTEGER_POINTER(spanNewColIdx); //panNewColIdx
-   
+
   PROTECT(spanNewRowIdx = NEW_INTEGER(m));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[3] = panNewRowIdx = INTEGER_POINTER(spanNewRowIdx); //panNewRowIdx
-   
+
   PROTECT(spanNewColPos = NEW_INTEGER(n));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[4] = panNewColPos = INTEGER_POINTER(spanNewColPos); //panNewColPos
-   
+
   PROTECT(spanNewRowPos = NEW_INTEGER(m));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[5] = panNewRowPos = INTEGER_POINTER(spanNewRowPos); //panNewRowPos
-  
+
   *pnErrorCode = errorcode = LSfindLtf(pModel
     ,ivecptr[2] //*panNewColIdx
     ,ivecptr[3] //*panNewRowIdx
@@ -18427,34 +18427,34 @@ SEXP rcLSfindLtf(SEXP spModel)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spanNewColIdx);
     SET_VECTOR_ELT(rList, 2, spanNewRowIdx);
     SET_VECTOR_ELT(rList, 3, spanNewColPos);
     SET_VECTOR_ELT(rList, 4, spanNewRowPos);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
  * @brief LSfreeObjPool
- * @param[in,out] pModel  
+ * @param[in,out] pModel
  * @return int An integer error code
- * @remark ErrorCode = rLSfreeObjPool(spModel) 
+ * @remark ErrorCode = rLSfreeObjPool(spModel)
  */
-SEXP rcLSfreeObjPool(SEXP spModel)    
+SEXP rcLSfreeObjPool(SEXP spModel)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
-  
-    
+
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -18463,19 +18463,19 @@ SEXP rcLSfreeObjPool(SEXP spModel)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 1;
   int       nIdx, nProtect = 0;
-  
 
-    
+
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
 
-  CHECK_MODEL_ERROR;    
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
 
 
   // Get C pointers
@@ -18485,14 +18485,14 @@ SEXP rcLSfreeObjPool(SEXP spModel)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
@@ -18503,24 +18503,24 @@ ErrorReturn:
  * @param[in,out] paiAlldiffL
  * @param[in,out] paiAlldiffU
  * @param[in,out] paiAlldiffBeg
- * @param[in,out] paiAlldiffVar  
+ * @param[in,out] paiAlldiffVar
  * @return int An integer error code
- * @remark ErrorCode,pinALLDIFF,paiAlldiffDim,paiAlldiffL,paiAlldiffU,paiAlldiffBeg,paiAlldiffVar = rLSgetALLDIFFData(spModel) 
+ * @remark ErrorCode,pinALLDIFF,paiAlldiffDim,paiAlldiffL,paiAlldiffU,paiAlldiffBeg,paiAlldiffVar = rLSgetALLDIFFData(spModel)
  */
-SEXP rcLSgetALLDIFFData(SEXP spModel)    
+SEXP rcLSgetALLDIFFData(SEXP spModel)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int *pinALLDIFF= NULL;
   int *paiAlldiffDim= NULL;
   int *paiAlldiffL= NULL;
   int *paiAlldiffU= NULL;
   int *paiAlldiffBeg= NULL;
   int *paiAlldiffVar= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -18529,7 +18529,7 @@ SEXP rcLSgetALLDIFFData(SEXP spModel)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 7;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spinALLDIFF= R_NilValue;
   SEXP spaiAlldiffDim= R_NilValue;
   SEXP spaiAlldiffL= R_NilValue;
@@ -18537,51 +18537,51 @@ SEXP rcLSgetALLDIFFData(SEXP spModel)
   SEXP spaiAlldiffBeg= R_NilValue;
   SEXP spaiAlldiffVar= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
 
-  CHECK_MODEL_ERROR;    
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
 
   errorcode = LSgetALLDIFFData(pModel,&ibuf[2],NULL,NULL,NULL,NULL,NULL);
-  
-  // Get C pointers 
+
+  // Get C pointers
   PROTECT(spinALLDIFF = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[2] = pinALLDIFF = INTEGER_POINTER(spinALLDIFF); //pinALLDIFF
   *ivecptr[2] = ibuf[2];
-   
+
   PROTECT(spaiAlldiffDim = NEW_INTEGER(ibuf[2]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[3] = paiAlldiffDim = INTEGER_POINTER(spaiAlldiffDim); //paiAlldiffDim
-   
+
   PROTECT(spaiAlldiffL = NEW_INTEGER(ibuf[2]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[4] = paiAlldiffL = INTEGER_POINTER(spaiAlldiffL); //paiAlldiffL
-   
+
   PROTECT(spaiAlldiffU = NEW_INTEGER(ibuf[2]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[5] = paiAlldiffU = INTEGER_POINTER(spaiAlldiffU); //paiAlldiffU
-   
+
   PROTECT(spaiAlldiffBeg = NEW_INTEGER(ibuf[2]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[6] = paiAlldiffBeg = INTEGER_POINTER(spaiAlldiffBeg); //paiAlldiffBeg
-   
+
   *pnErrorCode = errorcode = LSgetALLDIFFData(pModel,&ibuf[2],ivecptr[3],ivecptr[4],ivecptr[5],ivecptr[6],NULL);
-  if (errorcode) goto ErrorReturn;  
+  if (errorcode) goto ErrorReturn;
   ibuf[7]=ivecptr[6][ibuf[2]-1]+ivecptr[3][ibuf[2]-1]; //n+dim
-  
+
   PROTECT(spaiAlldiffVar = NEW_INTEGER(ibuf[7]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[7] = paiAlldiffVar = INTEGER_POINTER(spaiAlldiffVar); //paiAlldiffVar
-  
-  
+
+
   *pnErrorCode = errorcode = LSgetALLDIFFData(pModel
     ,ivecptr[2] //*pinALLDIFF
     ,NULL //*paiAlldiffDim
@@ -18593,8 +18593,8 @@ SEXP rcLSgetALLDIFFData(SEXP spModel)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spinALLDIFF);
@@ -18603,10 +18603,10 @@ ErrorReturn:
     SET_VECTOR_ELT(rList, 4, spaiAlldiffU);
     SET_VECTOR_ELT(rList, 5, spaiAlldiffBeg);
     SET_VECTOR_ELT(rList, 6, spaiAlldiffVar);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
@@ -18616,23 +18616,23 @@ ErrorReturn:
  * @param[in,out] piAlldiffDim
  * @param[in,out] piAlldiffL
  * @param[in,out] piAlldiffU
- * @param[in,out] paiAlldiffVar  
+ * @param[in,out] paiAlldiffVar
  * @return int An integer error code
- * @remark ErrorCode,piAlldiffDim,piAlldiffL,piAlldiffU,paiAlldiffVar = rLSgetALLDIFFDatai(spModel,iALLDIFF) 
+ * @remark ErrorCode,piAlldiffDim,piAlldiffL,piAlldiffU,paiAlldiffVar = rLSgetALLDIFFDatai(spModel,iALLDIFF)
  */
-SEXP rcLSgetALLDIFFDatai(SEXP spModel,SEXP siALLDIFF)    
+SEXP rcLSgetALLDIFFDatai(SEXP spModel,SEXP siALLDIFF)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int iALLDIFF;
   int *piAlldiffDim= NULL;
   int *piAlldiffL= NULL;
   int *piAlldiffU= NULL;
   int *paiAlldiffVar= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -18641,45 +18641,45 @@ SEXP rcLSgetALLDIFFDatai(SEXP spModel,SEXP siALLDIFF)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 5;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spiAlldiffDim= R_NilValue;
   SEXP spiAlldiffL= R_NilValue;
   SEXP spiAlldiffU= R_NilValue;
   SEXP spaiAlldiffVar= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = iALLDIFF = Rf_asInteger(siALLDIFF);   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[2] = iALLDIFF = Rf_asInteger(siALLDIFF);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-    
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
-  // Get C pointers 
+
+  // Get C pointers
   PROTECT(spiAlldiffDim = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[3] = piAlldiffDim = INTEGER_POINTER(spiAlldiffDim); //piAlldiffDim
-   
+
   PROTECT(spiAlldiffL = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[4] = piAlldiffL = INTEGER_POINTER(spiAlldiffL); //piAlldiffL
-   
+
   PROTECT(spiAlldiffU = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[5] = piAlldiffU = INTEGER_POINTER(spiAlldiffU); //piAlldiffU
-  
+
   *pnErrorCode = errorcode = LSgetALLDIFFDatai(pModel,ibuf[2],ivecptr[3],ivecptr[4],ivecptr[5],NULL);
   if (errorcode) goto ErrorReturn;
-  
+
   PROTECT(spaiAlldiffVar = NEW_INTEGER(*ivecptr[3]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[6] = paiAlldiffVar = INTEGER_POINTER(spaiAlldiffVar); //paiAlldiffVar
-  
+
   *pnErrorCode = errorcode = LSgetALLDIFFDatai(pModel
     ,ibuf[2] //iALLDIFF
     ,ivecptr[3] //*piAlldiffDim
@@ -18690,18 +18690,18 @@ SEXP rcLSgetALLDIFFDatai(SEXP spModel,SEXP siALLDIFF)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spiAlldiffDim);
     SET_VECTOR_ELT(rList, 2, spiAlldiffL);
     SET_VECTOR_ELT(rList, 3, spiAlldiffU);
     SET_VECTOR_ELT(rList, 4, spaiAlldiffVar);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
@@ -18717,16 +18717,16 @@ ErrorReturn:
  * @param[in,out] pnNLPobjnnz
  * @param[in,out] pnVarNamelen
  * @param[in,out] pnConNamelen
- * @param[in,out] pnConeNamelen  
+ * @param[in,out] pnConeNamelen
  * @return int An integer error code
- * @remark ErrorCode,pnVars,pnCons,pnCones,pnAnnz,pnQCnnz,pnConennz,pnNLPnnz,pnNLPobjnnz,pnVarNamelen,pnConNamelen,pnConeNamelen = rLSgetDimensions(spModel) 
+ * @remark ErrorCode,pnVars,pnCons,pnCones,pnAnnz,pnQCnnz,pnConennz,pnNLPnnz,pnNLPobjnnz,pnVarNamelen,pnConNamelen,pnConeNamelen = rLSgetDimensions(spModel)
  */
-SEXP rcLSgetDimensions(SEXP spModel)    
+SEXP rcLSgetDimensions(SEXP spModel)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int *pnVars= NULL;
   int *pnCons= NULL;
   int *pnCones= NULL;
@@ -18738,8 +18738,8 @@ SEXP rcLSgetDimensions(SEXP spModel)
   int *pnVarNamelen= NULL;
   int *pnConNamelen= NULL;
   int *pnConeNamelen= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -18748,7 +18748,7 @@ SEXP rcLSgetDimensions(SEXP spModel)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 12;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spnVars= R_NilValue;
   SEXP spnCons= R_NilValue;
   SEXP spnCones= R_NilValue;
@@ -18761,64 +18761,64 @@ SEXP rcLSgetDimensions(SEXP spModel)
   SEXP spnConNamelen= R_NilValue;
   SEXP spnConeNamelen= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
 
-  CHECK_MODEL_ERROR;    
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
 
-  // Get C pointers 
+
+  // Get C pointers
   PROTECT(spnVars = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[2] = pnVars = INTEGER_POINTER(spnVars); //pnVars
-   
+
   PROTECT(spnCons = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[3] = pnCons = INTEGER_POINTER(spnCons); //pnCons
-   
+
   PROTECT(spnCones = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[4] = pnCones = INTEGER_POINTER(spnCones); //pnCones
-   
+
   PROTECT(spnAnnz = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[5] = pnAnnz = INTEGER_POINTER(spnAnnz); //pnAnnz
-   
+
   PROTECT(spnQCnnz = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[6] = pnQCnnz = INTEGER_POINTER(spnQCnnz); //pnQCnnz
-   
+
   PROTECT(spnConennz = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[7] = pnConennz = INTEGER_POINTER(spnConennz); //pnConennz
-   
+
   PROTECT(spnNLPnnz = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[8] = pnNLPnnz = INTEGER_POINTER(spnNLPnnz); //pnNLPnnz
-   
+
   PROTECT(spnNLPobjnnz = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[9] = pnNLPobjnnz = INTEGER_POINTER(spnNLPobjnnz); //pnNLPobjnnz
-   
+
   PROTECT(spnVarNamelen = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[10] = pnVarNamelen = INTEGER_POINTER(spnVarNamelen); //pnVarNamelen
-   
+
   PROTECT(spnConNamelen = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[11] = pnConNamelen = INTEGER_POINTER(spnConNamelen); //pnConNamelen
-   
+
   PROTECT(spnConeNamelen = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[12] = pnConeNamelen = INTEGER_POINTER(spnConeNamelen); //pnConeNamelen
-  
+
   *pnErrorCode = errorcode = LSgetDimensions(pModel
     ,ivecptr[2] //*pnVars
     ,ivecptr[3] //*pnCons
@@ -18835,8 +18835,8 @@ SEXP rcLSgetDimensions(SEXP spModel)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spnVars);
@@ -18850,10 +18850,10 @@ ErrorReturn:
     SET_VECTOR_ELT(rList, 9, spnVarNamelen);
     SET_VECTOR_ELT(rList, 10, spnConNamelen);
     SET_VECTOR_ELT(rList, 11, spnConeNamelen);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
@@ -18863,23 +18863,23 @@ ErrorReturn:
  * @param[in,out] padDual
  * @param[in,out] padRedcosts
  * @param[in,out] panCstatus
- * @param[in,out] panRstatus  
+ * @param[in,out] panRstatus
  * @return int An integer error code
- * @remark ErrorCode,padPrimal,padDual,padRedcosts,panCstatus,panRstatus = rLSgetDualMIPsolution(spModel) 
+ * @remark ErrorCode,padPrimal,padDual,padRedcosts,panCstatus,panRstatus = rLSgetDualMIPsolution(spModel)
  */
-SEXP rcLSgetDualMIPsolution(SEXP spModel)    
+SEXP rcLSgetDualMIPsolution(SEXP spModel)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   double *padPrimal= NULL;
   double *padDual= NULL;
   double *padRedcosts= NULL;
   int *panCstatus= NULL;
   int *panRstatus= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -18888,47 +18888,47 @@ SEXP rcLSgetDualMIPsolution(SEXP spModel)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 6;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spadPrimal= R_NilValue;
   SEXP spadDual= R_NilValue;
   SEXP spadRedcosts= R_NilValue;
   SEXP spanCstatus= R_NilValue;
   SEXP spanRstatus= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
 
-  CHECK_MODEL_ERROR;    
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
 
-  // Get C pointers 
+
+  // Get C pointers
   PROTECT(spadPrimal = NEW_NUMERIC(n));
-  nProtect += 1;    
+  nProtect += 1;
   dvecptr[2] = padPrimal = NUMERIC_POINTER(spadPrimal); //padPrimal
-   
+
   PROTECT(spadDual = NEW_NUMERIC(m));
-  nProtect += 1;    
+  nProtect += 1;
   dvecptr[3] = padDual = NUMERIC_POINTER(spadDual); //padDual
-   
+
   PROTECT(spadRedcosts = NEW_NUMERIC(n));
-  nProtect += 1;    
+  nProtect += 1;
   dvecptr[4] = padRedcosts = NUMERIC_POINTER(spadRedcosts); //padRedcosts
-   
+
   PROTECT(spanCstatus = NEW_INTEGER(n));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[5] = panCstatus = INTEGER_POINTER(spanCstatus); //panCstatus
-   
+
   PROTECT(spanRstatus = NEW_INTEGER(m));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[6] = panRstatus = INTEGER_POINTER(spanRstatus); //panRstatus
-  
+
   *pnErrorCode = errorcode = LSgetDualMIPsolution(pModel
     ,dvecptr[2] //*padPrimal
     ,dvecptr[3] //*padDual
@@ -18939,8 +18939,8 @@ SEXP rcLSgetDualMIPsolution(SEXP spModel)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spadPrimal);
@@ -18948,10 +18948,10 @@ ErrorReturn:
     SET_VECTOR_ELT(rList, 3, spadRedcosts);
     SET_VECTOR_ELT(rList, 4, spanCstatus);
     SET_VECTOR_ELT(rList, 5, spanRstatus);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
@@ -18960,22 +18960,22 @@ ErrorReturn:
  * @param[in,out] nCheckVals
  * @param[in,out] pnSets
  * @param[in,out] paiSetsBeg
- * @param[in,out] paiCols  
+ * @param[in,out] paiCols
  * @return int An integer error code
- * @remark ErrorCode,pnSets,paiSetsBeg,paiCols = rLSgetDuplicateColumns(spModel,nCheckVals) 
+ * @remark ErrorCode,pnSets,paiSetsBeg,paiCols = rLSgetDuplicateColumns(spModel,nCheckVals)
  */
-SEXP rcLSgetDuplicateColumns(SEXP spModel,SEXP snCheckVals)    
+SEXP rcLSgetDuplicateColumns(SEXP spModel,SEXP snCheckVals)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int nCheckVals;
   int *pnSets= NULL;
   int *paiSetsBeg= NULL;
   int *paiCols= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -18984,39 +18984,39 @@ SEXP rcLSgetDuplicateColumns(SEXP spModel,SEXP snCheckVals)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 4;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spnSets= R_NilValue;
   SEXP spaiSetsBeg= R_NilValue;
   SEXP spaiCols= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-    
-  ibuf[2] = nCheckVals = Rf_asInteger(snCheckVals);   
 
-  CHECK_MODEL_ERROR;    
+  ibuf[2] = nCheckVals = Rf_asInteger(snCheckVals);
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
   errorcode = LSgetDuplicateColumns(pModel,ibuf[2],&ibuf[3],NULL,NULL);
 
-  // Get C pointers 
+  // Get C pointers
   PROTECT(spnSets = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[3] = pnSets = INTEGER_POINTER(spnSets); //pnSets
   *ivecptr[3] = ibuf[3];
-  
+
   PROTECT(spaiSetsBeg = NEW_INTEGER(ibuf[3]+1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[4] = paiSetsBeg = INTEGER_POINTER(spaiSetsBeg); //paiSetsBeg
-   
+
   PROTECT(spaiCols = NEW_INTEGER(ibuf[3]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[5] = paiCols = INTEGER_POINTER(spaiCols); //paiCols
-  
+
   *pnErrorCode = errorcode = LSgetDuplicateColumns(pModel
     ,ibuf[2] //nCheckVals
     ,ivecptr[3] //*pnSets
@@ -19026,17 +19026,17 @@ SEXP rcLSgetDuplicateColumns(SEXP spModel,SEXP snCheckVals)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spnSets);
     SET_VECTOR_ELT(rList, 2, spaiSetsBeg);
     SET_VECTOR_ELT(rList, 3, spaiCols);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 
@@ -19048,24 +19048,24 @@ ErrorReturn:
  * @param[in,out] paiJrows
  * @param[in,out] paiJcols
  * @param[in,out] padJcoef
- * @param[in,out] padX  
+ * @param[in,out] padX
  * @return int An integer error code
- * @remark ErrorCode,pnJnonzeros,pnJobjnnz,paiJrows,paiJcols,padJcoef = rLSgetJac(spModel,padX) 
+ * @remark ErrorCode,pnJnonzeros,pnJobjnnz,paiJrows,paiJcols,padJcoef = rLSgetJac(spModel,padX)
  */
-SEXP rcLSgetJac(SEXP spModel,SEXP spadX)    
+SEXP rcLSgetJac(SEXP spModel,SEXP spadX)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int *pnJnonzeros= NULL;
   int *pnJobjnnz= NULL;
   int *paiJrows= NULL;
   int *paiJcols= NULL;
   double *padJcoef= NULL;
   double *padX= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -19074,52 +19074,52 @@ SEXP rcLSgetJac(SEXP spModel,SEXP spadX)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 6;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spnJnonzeros= R_NilValue;
   SEXP spnJobjnnz= R_NilValue;
   SEXP spaiJrows= R_NilValue;
   SEXP spaiJcols= R_NilValue;
   SEXP spadJcoef= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
 
-  CHECK_MODEL_ERROR;    
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
   MAKE_REAL_ARRAY(padX,spadX);
-  
 
-  // Get C pointers 
+
+  // Get C pointers
   dvecptr[7] = padX;
-  
+
   PROTECT(spnJnonzeros = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[2] = pnJnonzeros = INTEGER_POINTER(spnJnonzeros); //pnJnonzeros
-   
+
   PROTECT(spnJobjnnz = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[3] = pnJobjnnz = INTEGER_POINTER(spnJobjnnz); //pnJobjnnz
-   
+
   PROTECT(spaiJrows = NEW_INTEGER(m+2));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[4] = paiJrows = INTEGER_POINTER(spaiJrows); //paiJrows
-  
+
   errorcode = LSgetJac(pModel,&ibuf[2],&ibuf[3],NULL,NULL,NULL,dvecptr[7]);
   if (errorcode) goto ErrorReturn;
-  
+
   PROTECT(spaiJcols = NEW_INTEGER(ibuf[3]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[5] = paiJcols = INTEGER_POINTER(spaiJcols); //paiJcols
-   
+
   PROTECT(spadJcoef = NEW_NUMERIC(ibuf[3]));
-  nProtect += 1;    
+  nProtect += 1;
   dvecptr[6] = padJcoef = NUMERIC_POINTER(spadJcoef); //padJcoef
-     
+
   *pnErrorCode = errorcode = LSgetJac(pModel
     ,ivecptr[2] //*pnJnonzeros
     ,ivecptr[3] //*pnJobjnnz
@@ -19131,8 +19131,8 @@ SEXP rcLSgetJac(SEXP spModel,SEXP spadX)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spnJnonzeros);
@@ -19141,10 +19141,10 @@ ErrorReturn:
     SET_VECTOR_ELT(rList, 4, spaiJcols);
     SET_VECTOR_ELT(rList, 5, spadJcoef);
     SET_VECTOR_ELT(rList, 6, spadX);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 
@@ -19153,21 +19153,21 @@ ErrorReturn:
  * @param[in,out] pModel
  * @param[in,out] pnSuf_set
  * @param[in,out] pnIIS_set
- * @param[in,out] paiSets  
+ * @param[in,out] paiSets
  * @return int An integer error code
- * @remark ErrorCode,pnSuf_set,pnIIS_set,paiSets = rLSgetIISSETs(spModel) 
+ * @remark ErrorCode,pnSuf_set,pnIIS_set,paiSets = rLSgetIISSETs(spModel)
  */
-SEXP rcLSgetIISSETs(SEXP spModel)    
+SEXP rcLSgetIISSETs(SEXP spModel)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int *pnSuf_set= NULL;
   int *pnIIS_set= NULL;
   int *paiSets= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -19176,43 +19176,43 @@ SEXP rcLSgetIISSETs(SEXP spModel)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 4;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spnSuf_set= R_NilValue;
   SEXP spnIIS_set= R_NilValue;
   SEXP spaiSets= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
 
-  CHECK_MODEL_ERROR;    
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
 
-  // Get C pointers 
+
+  // Get C pointers
   PROTECT(spnSuf_set = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[2] = pnSuf_set = INTEGER_POINTER(spnSuf_set); //pnSuf_set
-   
+
   PROTECT(spnIIS_set = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[3] = pnIIS_set = INTEGER_POINTER(spnIIS_set); //pnIIS_set
-   
+
   *pnErrorCode = errorcode = LSgetIISSETs(pModel
     ,ivecptr[2] //*pnSuf_set
     ,ivecptr[3] //*pnIIS_set
     ,ivecptr[4]); //*paiSets
   if (errorcode) goto ErrorReturn;
-    
+
   PROTECT(spaiSets = NEW_INTEGER(*ivecptr[3]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[4] = paiSets = INTEGER_POINTER(spaiSets); //paiSets
-  
+
   *pnErrorCode = errorcode = LSgetIISSETs(pModel
     ,ivecptr[2] //*pnSuf_set
     ,ivecptr[3] //*pnIIS_set
@@ -19221,17 +19221,17 @@ SEXP rcLSgetIISSETs(SEXP spModel)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spnSuf_set);
     SET_VECTOR_ELT(rList, 2, spnIIS_set);
     SET_VECTOR_ELT(rList, 3, spaiSets);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
   /*
@@ -19239,21 +19239,21 @@ ErrorReturn:
  * @param[in,out] pModel
  * @param[in,out] pnSuf_xnt
  * @param[in,out] pnIIS_xnt
- * @param[in,out] paiVars  
+ * @param[in,out] paiVars
  * @return int An integer error code
- * @remark ErrorCode,pnSuf_xnt,pnIIS_xnt,paiVars = rLSgetIISInts(spModel) 
+ * @remark ErrorCode,pnSuf_xnt,pnIIS_xnt,paiVars = rLSgetIISInts(spModel)
  */
-SEXP rcLSgetIISInts(SEXP spModel)    
+SEXP rcLSgetIISInts(SEXP spModel)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int *pnSuf_xnt= NULL;
   int *pnIIS_xnt= NULL;
   int *paiVars= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -19262,43 +19262,43 @@ SEXP rcLSgetIISInts(SEXP spModel)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 4;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spnSuf_xnt= R_NilValue;
   SEXP spnIIS_xnt= R_NilValue;
   SEXP spaiVars= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
 
-  CHECK_MODEL_ERROR;    
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
-  
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
 
-  // Get C pointers 
+
+  // Get C pointers
   PROTECT(spnSuf_xnt = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[2] = pnSuf_xnt = INTEGER_POINTER(spnSuf_xnt); //pnSuf_xnt
-   
+
   PROTECT(spnIIS_xnt = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[3] = pnIIS_xnt = INTEGER_POINTER(spnIIS_xnt); //pnIIS_xnt
-   
+
   *pnErrorCode = errorcode = LSgetIISInts(pModel
     ,ivecptr[2] //*pnSuf_xnt
     ,ivecptr[3] //*pnIIS_xnt
     ,ivecptr[4]); //*paiVars
   if (errorcode) goto ErrorReturn;
-    
+
   PROTECT(spaiVars = NEW_INTEGER(*pnIIS_xnt));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[4] = paiVars = INTEGER_POINTER(spaiVars); //paiVars
-  
+
   *pnErrorCode = errorcode = LSgetIISInts(pModel
     ,ivecptr[2] //*pnSuf_xnt
     ,ivecptr[3] //*pnIIS_xnt
@@ -19307,17 +19307,17 @@ SEXP rcLSgetIISInts(SEXP spModel)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spnSuf_xnt);
     SET_VECTOR_ELT(rList, 2, spnIIS_xnt);
     SET_VECTOR_ELT(rList, 3, spaiVars);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 
@@ -19329,24 +19329,24 @@ ErrorReturn:
  * @param[in,out] paiHcol1
  * @param[in,out] paiHcol2
  * @param[in,out] padHcoef
- * @param[in,out] padX  
+ * @param[in,out] padX
  * @return int An integer error code
- * @remark ErrorCode,pnHnonzeros,paiHrows,paiHcol1,paiHcol2,padHcoef = rLSgetHess(spModel,padX) 
+ * @remark ErrorCode,pnHnonzeros,paiHrows,paiHcol1,paiHcol2,padHcoef = rLSgetHess(spModel,padX)
  */
-SEXP rcLSgetHess(SEXP spModel,SEXP spadX)    
+SEXP rcLSgetHess(SEXP spModel,SEXP spadX)
 {
   DCL_BUF(20);
   pLSmodel     pModel=NULL;
   prLSmodel prModel=NULL;
-  
+
   int *pnHnonzeros= NULL;
   int *paiHrows= NULL;
   int *paiHcol1= NULL;
   int *paiHcol2= NULL;
   double *padHcoef= NULL;
   double *padX= NULL;
-  
-    
+
+
   SEXP      sModel=spModel;
   int       *pnErrorCode;
   SEXP      spnErrorCode = R_NilValue;
@@ -19355,52 +19355,52 @@ SEXP rcLSgetHess(SEXP spModel,SEXP spadX)
   SEXP      ListNames = R_NilValue;
   int       nNumItems = 6;
   int       nIdx, nProtect = 0;
-  
+
   SEXP spnHnonzeros= R_NilValue;
   SEXP spaiHrows= R_NilValue;
   SEXP spaiHcol1= R_NilValue;
   SEXP spaiHcol2= R_NilValue;
   SEXP spadHcoef= R_NilValue;
 
-    
+
   // zero-out temp vectors
   ZERO_BUF(20);
   INI_ERR_CODE;
-   
 
-  CHECK_MODEL_ERROR;    
+
+  CHECK_MODEL_ERROR;
   LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
-  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);    
-  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz); 
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
 
   MAKE_REAL_ARRAY(padX,spadX);
   dvecptr[7] = padX; //padX
-  
-  errorcode = LSgetHess(pModel,&ibuf[2],NULL,NULL,NULL,NULL,dvecptr[7]);  
-  
-  // Get C pointers 
+
+  errorcode = LSgetHess(pModel,&ibuf[2],NULL,NULL,NULL,NULL,dvecptr[7]);
+
+  // Get C pointers
   PROTECT(spnHnonzeros = NEW_INTEGER(1));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[2] = pnHnonzeros = INTEGER_POINTER(spnHnonzeros); //pnHnonzeros
   *ivecptr[2] = ibuf[2];
-   
+
   PROTECT(spaiHrows = NEW_INTEGER(m+2));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[3] = paiHrows = INTEGER_POINTER(spaiHrows); //paiHrows
-   
+
   PROTECT(spaiHcol1 = NEW_INTEGER(ibuf[2]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[4] = paiHcol1 = INTEGER_POINTER(spaiHcol1); //paiHcol1
-   
+
   PROTECT(spaiHcol2 = NEW_INTEGER(ibuf[2]));
-  nProtect += 1;    
+  nProtect += 1;
   ivecptr[5] = paiHcol2 = INTEGER_POINTER(spaiHcol2); //paiHcol2
-   
+
   PROTECT(spadHcoef = NEW_NUMERIC(ibuf[2]));
-  nProtect += 1;    
+  nProtect += 1;
   dvecptr[6] = padHcoef = NUMERIC_POINTER(spadHcoef); //padHcoef
-   
-  
+
+
   *pnErrorCode = errorcode = LSgetHess(pModel
     ,ivecptr[2] //*pnHnonzeros
     ,ivecptr[3] //*paiHrows
@@ -19412,8 +19412,8 @@ SEXP rcLSgetHess(SEXP spModel,SEXP spadX)
 
 ErrorReturn:
   //allocate list
-  SET_UP_LIST;  
-  
+  SET_UP_LIST;
+
   SET_VECTOR_ELT(rList, 0, spnErrorCode);
   if (!errorcode) {
     SET_VECTOR_ELT(rList, 1, spnHnonzeros);
@@ -19421,10 +19421,10 @@ ErrorReturn:
     SET_VECTOR_ELT(rList, 3, spaiHcol1);
     SET_VECTOR_ELT(rList, 4, spaiHcol2);
     SET_VECTOR_ELT(rList, 5, spadHcoef);
-  }    
+  }
   UNPROTECT(nProtect + 2);
-  return rList; 
-  
+  return rList;
+
 }
 
 typedef struct rLindoData_t {
@@ -19453,7 +19453,7 @@ typedef struct rLindoData_t {
 * @param[in,out] line
 * @param[in,out] userdata
 * @return None
-* @remark 
+* @remark
 */
 void LS_CALLTYPE relayLogfunc(pLSmodel pModel, char *line, void *userdata)
 {
@@ -19463,23 +19463,22 @@ void LS_CALLTYPE relayLogfunc(pLSmodel pModel, char *line, void *userdata)
     SEXP sFunc = rudata->locFunc;
     SEXP sData = rudata->locData;
     SEXP sLine = R_NilValue;
-    
+
     PROTECT(sLine = NEW_CHARACTER(1));
-    nProtect += 1; 
+    nProtect += 1;
     SET_STRING_ELT(sLine,0,mkChar(line));
-    
-    nProtect += 1; 
+
+    nProtect += 1;
     PROTECT(R_fcall = lang4(sFunc, rudata->sModel, sLine, sData));
 
     eval(R_fcall, sData);
-    
+
     UNPROTECT(nProtect);
 
     return;
 } /*relayModelLogfunc*/
 
-
-/*
+  /*
   * @brief relayLogfunc
   * @param[in,out] pModel
   * @param[in,out] line
@@ -19533,7 +19532,7 @@ SEXP rcLSsetModelLogfunc(SEXP sModel, SEXP sFunc, SEXP sData)
     int       nIdx, nProtect = 0;
     rLindoData_t *rudata = NULL;
 
-    ZERO_BUF(20);    
+    ZERO_BUF(20);
     //errorcode item
     INI_ERR_CODE;
 
@@ -19647,25 +19646,25 @@ ErrorReturn:
 int LS_CALLTYPE relayCallback(pLSmodel pModel, int iLoc, void *userdata) {
     DCL_BUF(20);
     int       nProtect = 0;
-    
+
     SEXP R_fcall;
     rLindoData_t *rudata = (rLindoData_t*)userdata;
     SEXP sFunc = rudata->cbFunc;
     SEXP sData = rudata->cbData;
     SEXP siLoc = R_NilValue;
-    
-    ZERO_BUF(20);    
-       
+
+    ZERO_BUF(20);
+
     PROTECT(siLoc = NEW_INTEGER(1));
-    nProtect += 1;    
+    nProtect += 1;
     ivecptr[1] = INTEGER_POINTER(siLoc);  //iLoc
     *ivecptr[1] = iLoc;
-    
-    nProtect += 1; 
+
+    nProtect += 1;
     PROTECT(R_fcall = lang4(sFunc, rudata->sModel, siLoc, sData));
 
     errorcode = asInteger(eval(R_fcall, sData));
-    
+
     UNPROTECT(nProtect);
     return errorcode;
 }
@@ -19693,7 +19692,7 @@ SEXP rcLSsetCallback(SEXP sModel, SEXP sFunc, SEXP sData)
     int       nIdx, nProtect = 0;
     rLindoData_t *rudata = NULL;
 
-    ZERO_BUF(20);    
+    ZERO_BUF(20);
     //errorcode item
     INI_ERR_CODE;
 
@@ -19786,12 +19785,12 @@ int    LS_CALLTYPE relayFuncalc(pLSmodel pModel, void    *userdata,
 #else
     PROTECT(spadPrimal = R_MakeExternalPtr(padPrimal,  R_NilValue,  R_NilValue));
     nProtect += 1;
-#endif      
+#endif
     PROTECT(R_fcall = lang7(sFunc, rudata->sModel, sData, snRow, spadPrimal, snJDiff, sdXJBase));
     nProtect += 1;
 
     *pdFuncVal = asReal(eval(R_fcall, R_GlobalEnv));
-    
+
     R_ClearExternalPtr(spadPrimal);
 
 ErrorReturn:
@@ -20015,7 +20014,7 @@ SEXP rcLSgetObjPoolParam(SEXP spModel, SEXP snObjIndex, SEXP smParam)
 
 
 
-  // Get C pointers 
+  // Get C pointers
   PROTECT(spdValue = NEW_NUMERIC(1));
   nProtect += 1;
   dvecptr[4] = pdValue = NUMERIC_POINTER(spdValue); //pdValue
@@ -20088,6 +20087,145 @@ SEXP rcLSgetProgressInfo(SEXP spModel, SEXP snLocation, SEXP snQuery)
     , ibuf[2] //nLocation
     , ibuf[3]
     ,NULL); //nQuery
+
+
+ErrorReturn:
+  //allocate list
+  SET_UP_LIST;
+
+  SET_VECTOR_ELT(rList, 0, spnErrorCode);
+  if (!errorcode) {
+  }
+  UNPROTECT(nProtect + 2);
+  return rList;
+
+}
+
+
+/*
+* @brief LSdeleteIndConstraints
+* @param[in,out] pModel
+* @param[in,out] nCons
+* @param[in,out] paiCons
+* @return int An integer error code
+* @remark ErrorCode = rLSdeleteIndConstraints(spModel,nCons,paiCons)
+*/
+SEXP rcLSdeleteIndConstraints(SEXP spModel, SEXP snCons, SEXP spaiCons)
+{
+  DCL_BUF(20);
+  pLSmodel     pModel = NULL;
+  prLSmodel prModel = NULL;
+
+  int nCons;
+  int *paiCons = NULL;
+
+
+  SEXP      sModel = spModel;
+  int       *pnErrorCode;
+  SEXP      spnErrorCode = R_NilValue;
+  SEXP      rList = R_NilValue;
+  char      *Names[1] = { "ErrorCode" };
+  SEXP      ListNames = R_NilValue;
+  int       nNumItems = 1;
+  int       nIdx, nProtect = 0;
+
+
+
+  // zero-out temp vectors
+  ZERO_BUF(20);
+  INI_ERR_CODE;
+
+  ibuf[2] = nCons = Rf_asInteger(snCons);
+  MAKE_INT_ARRAY(paiCons, spaiCons);
+
+  CHECK_MODEL_ERROR;
+  LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
+
+
+  // Get C pointers    
+  ivecptr[3] = (int*)paiCons;
+
+  *pnErrorCode = errorcode = LSdeleteIndConstraints(pModel
+    , ibuf[2] //nCons
+    , ivecptr[3]); //*paiCons
+
+
+ErrorReturn:
+  //allocate list
+  SET_UP_LIST;
+
+  SET_VECTOR_ELT(rList, 0, spnErrorCode);
+  if (!errorcode) {
+  }
+  UNPROTECT(nProtect + 2);
+  return rList;
+
+}
+
+/*
+* @brief LSloadIndData
+* @param[in,out] pModel
+* @param[in,out] nIndicRows
+* @param[in,out] paiIndicRows
+* @param[in,out] paiIndicCols
+* @param[in,out] paiIndicVals
+* @return int An integer error code
+* @remark ErrorCode = rLSloadIndData(spModel,nIndicRows,paiIndicRows,paiIndicCols,paiIndicVals)
+*/
+SEXP rcLSloadIndData(SEXP spModel, SEXP snIndicRows, SEXP spaiIndicRows, SEXP spaiIndicCols, SEXP spaiIndicVals)
+{
+  DCL_BUF(20);
+  pLSmodel     pModel = NULL;
+  prLSmodel prModel = NULL;
+
+  int nIndicRows;
+  int *paiIndicRows = NULL;
+  int *paiIndicCols = NULL;
+  int *paiIndicVals = NULL;
+
+
+  SEXP      sModel = spModel;
+  int       *pnErrorCode;
+  SEXP      spnErrorCode = R_NilValue;
+  SEXP      rList = R_NilValue;
+  char      *Names[1] = { "ErrorCode" };
+  SEXP      ListNames = R_NilValue;
+  int       nNumItems = 1;
+  int       nIdx, nProtect = 0;
+
+
+
+  // zero-out temp vectors
+  ZERO_BUF(20);
+  INI_ERR_CODE;
+
+  ibuf[2] = nIndicRows = Rf_asInteger(snIndicRows);
+  MAKE_INT_ARRAY(paiIndicRows, spaiIndicRows);
+  MAKE_INT_ARRAY(paiIndicCols, spaiIndicCols);
+  MAKE_INT_ARRAY(paiIndicVals, spaiIndicVals);
+
+  CHECK_MODEL_ERROR;
+  LSgetInfo(pModel, LS_IINFO_NUM_VARS, &n);
+  LSgetInfo(pModel, LS_IINFO_NUM_CONS, &m);
+  LSgetInfo(pModel, LS_IINFO_NUM_NONZ, &nz);
+
+
+
+  // Get C pointers    
+  ivecptr[3] = (int*)paiIndicRows;
+
+  ivecptr[4] = (int*)paiIndicCols;
+
+  ivecptr[5] = (int*)paiIndicVals;
+
+  *pnErrorCode = errorcode = LSloadIndData(pModel
+    , ibuf[2] //nIndicRows
+    , ivecptr[3] //*paiIndicRows
+    , ivecptr[4] //*paiIndicCols
+    , ivecptr[5]); //*paiIndicVals
 
 
 ErrorReturn:

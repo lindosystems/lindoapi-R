@@ -7,8 +7,6 @@ grep LS_CALLTYPE ../../../dirbnb/ship/lindo.h  |\
 		grep -v "LSdate*" |\
 		grep -v "LSgetMatrix*" |\
 		grep -v "LSgetCL*" |\
-		grep -v "LSgetObjHandle*" |\
-		grep -v "LSgetOrbitInfo*" |\
 		grep -v "LSinstalExternalSolver*" |\
 		grep -v "LSdeleteExternalSolver*" |\
 		grep -v "LSsolveExternally*" |\
