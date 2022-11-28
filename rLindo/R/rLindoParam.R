@@ -7,7 +7,7 @@
  ##    1415 North Dayton St.          info@lindo.com
  ##    Chicago, IL 60622              http://www.lindo.com
  ##
- ##    $Id: lindo.r 3021 2022-01-25 10:13:57Z mka $
+ ##    $Id: lindo.r 3042 2022-10-09 23:46:14Z mka $
  ##
  #####################################################################/
 
@@ -20,7 +20,7 @@
  # Version macros #/
  LS_MAJOR_VER_NUMBER                                          <- 14L
  LS_MINOR_VER_NUMBER                                          <- 0L
- LS_REV_VER_NUMBER                                            <- 147L
+ LS_REV_VER_NUMBER                                            <- 191L
  LS_VER_NUMBER                                                <- 1400L
  LS_BUILD_VER_NUMBER                                          <- 5099L
 
@@ -159,6 +159,8 @@
  LS_XSOLVER_SOP                                               <- 11L
  LS_XSOLVER_CBC                                               <- 12L
  LS_XSOLVER_XPR                                               <- 13L
+ LS_XSOLVER_HIGHS                                             <- 14L
+ LS_XSOLVER_LUA                                               <- 98L
  LS_XSOLVER_XLINDO                                            <- 99L
 
  # ref types #/
@@ -505,6 +507,7 @@
  LS_IPARAM_MIP_SOLLIM                                         <- 5420L
  LS_IPARAM_MIP_FP_PROJECTION                                  <- 5421L
  LS_IPARAM_MIP_SYMMETRY_NONZ                                  <- 5422L
+ LS_IPARAM_MIP_FIXINIT_ITRLIM                                 <- 5423L
 
     # Global optimization (GOP) parameters (6000 - 6+++) #/
  LS_DPARAM_GOP_RELOPTTOL                                      <- 6400L

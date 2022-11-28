@@ -14614,6 +14614,58 @@ ErrorReturn:
 }
 
   /*
+ * @brief LSaddTunerStrOption
+ * @param[in,out] pEnv
+ * @param[in,out] szKey
+ * @param[in,out] szValue
+ * @return int An integer error code
+ * @remark errorcode = rLSaddTunerStrOption(pEnv,szKey,szValue)
+ */
+SEXP rcLSaddTunerStrOption(SEXP spEnv,SEXP sszKey,SEXP sszValue) {
+  DCL_BUF(20);
+  pLSenv     pEnv=NULL;
+  prLSenv prEnv=NULL;
+
+  char *szKey;
+  char *szValue;
+
+
+  SEXP      sEnv=spEnv;
+  int       *pnErrorCode;
+  SEXP      spnErrorCode = R_NilValue;
+  SEXP      rList = R_NilValue;
+  char      *Names[1] = {"ErrorCode"};
+  SEXP      ListNames = R_NilValue;
+  int       nNumItems = 1;
+  int       nIdx, nProtect = 0;
+
+  // zero-out temp vectors
+  ZERO_BUF(20);
+  INI_ERR_CODE;
+
+  sbuf[2] = szKey = (char *) CHAR(STRING_ELT(sszKey,0));
+  sbuf[3] = szValue = (char *) CHAR(STRING_ELT(sszValue,1));
+
+  CHECK_ENV_ERROR;
+
+  // Get C pointers
+  *pnErrorCode = errorcode = LSaddTunerStrOption(pEnv
+    ,sbuf[2] //*szKey
+    ,sbuf[3]); //*szValue
+
+
+ErrorReturn:
+  //allocate list
+  SET_UP_LIST;
+
+  SET_VECTOR_ELT(rList, 0, spnErrorCode);
+
+  UNPROTECT(nProtect + 2);
+  return rList;
+
+}
+
+  /*
  * @brief LSaddTunerZDynamic
  * @param[in,out] pEnv
  * @param[in,out] iParam

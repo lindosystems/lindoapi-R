@@ -1273,6 +1273,7 @@ SEXP rcLSwriteTunerParameters(SEXP spEnv,SEXP sszFile,SEXP sjInstance,SEXP smCri
 SEXP rcLSwriteParameterAsciiDoc(SEXP spEnv,SEXP spszFileName);
 SEXP rcLSaddTunerInstance(SEXP spEnv,SEXP sszFile);
 SEXP rcLSaddTunerOption(SEXP spEnv,SEXP sszKey,SEXP sdValue);
+SEXP rcLSaddTunerStrOption(SEXP spEnv,SEXP sszKey,SEXP sszValue);
 SEXP rcLSaddTunerZDynamic(SEXP spEnv,SEXP siParam);
 SEXP rcLSaddTunerZStatic(SEXP spEnv,SEXP sjGroupId,SEXP siParam,SEXP sdValue);
 

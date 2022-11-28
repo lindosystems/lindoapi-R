@@ -3454,6 +3454,14 @@ rLSaddTunerOption <- function(spEnv,szKey,dValue) {
   return (ans)
 }
 
+rLSaddTunerStrOption <- function(spEnv,szKey,szValue) {
+  ans <- .Call("rcLSaddTunerStrOption", PACKAGE = "rLindo"
+        ,spEnv
+        ,as.character(szKey)
+        ,as.character(szValue))
+  return (ans)
+}
+
 rLSaddTunerZDynamic <- function(spEnv,iParam) {
   ans <- .Call("rcLSaddTunerZDynamic", PACKAGE = "rLindo"
         ,spEnv
