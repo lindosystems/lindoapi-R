@@ -5,13 +5,18 @@ echo rLindo Installation script for Linux and OSX
 echo         Lindo Systems, Inc.
 echo --------------------------------------------------
 
-
-if [ ! -f ../include/lsversion.sh ]; then
-	echo Error: \'../include/lsversion.sh\' file was not found
+if [ "${LINDOAPI_HOME}" = "" ]; then
+	echo Error: LINDOAPI_HOME variable is not set.
 	echo
 	exit
 fi
-source ../include/lsversion.sh
+
+if [ ! -f $LINDOAPI_HOME/include/lsversion.sh ]; then
+	echo Error: \'$LINDOAPI_HOME/include/lsversion.sh\' file was not found
+	echo
+	exit
+fi
+source $LINDOAPI_HOME/include/lsversion.sh
 echo Looking for source package rLindo_$LS_MAJOR.$LS_MINOR.tar.gz
 if [ -f rLindo_$LS_MAJOR.$LS_MINOR.tar.gz ]; then
 	echo Ok.. Installing...

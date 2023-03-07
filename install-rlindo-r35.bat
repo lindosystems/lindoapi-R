@@ -305,9 +305,9 @@ if not exist %LINDOAPI_HOME%/lib. (
 	goto END
 )
 
-if not exist ..\include\lsversion.sh goto NOVERSION
+if not exist %LINDOAPI_HOME%\include\lsversion.sh goto NOVERSION
 
-for /f "delims=" %%x in (..\include\lsversion.sh) do (set "%%x")
+for /f "delims=" %%x in (%LINDOAPI_HOME%\include\lsversion.sh) do (set "%%x")
 
 echo Checking for LINDO API %LS_MAJOR%.%LS_MINOR% ...
 if !R_ARCHITETURE! == "64bit" (
@@ -348,7 +348,7 @@ echo Error: Minimum R version required is %RMIN%, yours is %R_VER%.
 goto END
 
 :NOVERSION
-echo Error: '../include/lsversion.sh' file was not found
+echo Error: '%LINDOAPI_HOME%/include/lsversion.sh' file was not found
 echo.
 goto END
 

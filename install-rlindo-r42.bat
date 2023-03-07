@@ -32,7 +32,7 @@ FOR /F "tokens=4 delims=\" %%A IN (' "reg query "%KEY_NAME%" /reg:64 2>nul" ') D
             if "%%D" == !RCORE_VER! (@echo Found R !RCORE_VER!) else (set R_INSTALLED=false)
         )
     )
-	
+    
     if "!R_INSTALLED!" == "true" (
         rem set R installation path
         set R_PATH_KEY_NAME=%KEY_NAME%\%%A
@@ -57,7 +57,7 @@ FOR /F "tokens=4 delims=\" %%A IN (' "reg query "%KEY_NAME%" /reg:32 2>nul" ') D
             if "%%D" == !RCORE_VER! (@echo Found R !RCORE_VER!) else (set R_INSTALLED=false)
         )
     )
-	
+    
     if "!R_INSTALLED!" == "true" (
         rem set R installation path
         set R_PATH_KEY_NAME=%KEY_NAME%\%%A
@@ -82,8 +82,8 @@ FOR /F "tokens=4 delims=\" %%A IN (' "reg query "%KEY_NAME%" /reg:64 2>nul" ') D
             if "%%D" == !RCORE_VER! (@echo Found R !RCORE_VER!) else (set R_INSTALLED=false)
         )
     )
-	
-    if "!R_INSTALLED!" == "true" (		
+    
+    if "!R_INSTALLED!" == "true" (      
         rem set R installation path
         set R_PATH_KEY_NAME=%KEY_NAME%\%%A        
         FOR /F "skip=2 tokens=2*" %%C IN ('REG QUERY "!R_PATH_KEY_NAME!" /v "%R_PATH_VALUE_NAME%" /reg:64 2^>nul') DO (
@@ -99,7 +99,7 @@ FOR /F "tokens=4 delims=\" %%A IN (' "reg query "%KEY_NAME%" /reg:32 2>nul" ') D
     if "%%A" == "R" set R_INSTALLED=true
     if "%%A" == "R32" set R_INSTALLED=true
     if "%%A" == "R64" set R_INSTALLED=true
-	
+    
     if "!R_INSTALLED!" == "true" (
         rem set R installation path
         set R_PATH_KEY_NAME=%KEY_NAME%\%%A        
@@ -107,7 +107,7 @@ FOR /F "tokens=4 delims=\" %%A IN (' "reg query "%KEY_NAME%" /reg:32 2>nul" ') D
             if "%%D" == !RCORE_VER! (@echo Found R !RCORE_VER!) else (set R_INSTALLED=false)
         )
     )
-	
+    
     if "!R_INSTALLED!" == "true" (
         rem set R installation path
         set R_PATH_KEY_NAME=%KEY_NAME%\%%A
@@ -135,16 +135,16 @@ if not "!R_INSTALLED!"=="true" (
         )
         wget.exe --no-check-certificate https://cloud.r-project.org/bin/windows/base/old/%RCORE_VER%/%RCORE_EXE% -q --show-progress
         if not exist %RCORE_EXE% (
-        	echo Failed to download %RCORE_EXE%
-        	goto END
+            echo Failed to download %RCORE_EXE%
+            goto END
         )
         set /P response2= Downloading R completed, press Enter to continue...
     )
     
     %RCORE_EXE%
     if %errorlevel% neq 0 (
-		echo ERROR: Installing R failed.
-		goto END
+        echo ERROR: Installing R failed.
+        goto END
     )
     
     rem check again to set R_PATH
@@ -264,8 +264,8 @@ if not "!RTOOLS_INSTALLED!"=="true" (
     
     %RTOOLS_VER%
     if %errorlevel% neq 0 (
-		echo ERROR: Installing Rtools failed.
-		goto END
+        echo ERROR: Installing Rtools failed.
+        goto END
     )
     
     rem check again to set RTOOLS_PATH
@@ -295,19 +295,19 @@ Please reinstall Rtools, and make sure to check "32 bit toolchain" when installi
 rem echo %PATH%
 :check for LINDO API
 if "%LINDOAPI_HOME%" == "" (
-	echo ERROR: Environment variable LINDOAPI_HOME is not defined to your installation ^
+    echo ERROR: Environment variable LINDOAPI_HOME is not defined to your installation ^
 path of LINDO API.
-	goto END
+    goto END
 )
 if not exist %LINDOAPI_HOME%/lib. (
-	echo ERROR: Environment variable LINDOAPI_HOME is not set properly
-	echo %LINDOAPI_HOME%/lib is not a valid library path
-	goto END
+    echo ERROR: Environment variable LINDOAPI_HOME is not set properly
+    echo %LINDOAPI_HOME%/lib is not a valid library path
+    goto END
 )
 
-if not exist ..\include\lsversion.sh goto NOVERSION
+if not exist %LINDOAPI_HOME%\include\lsversion.sh goto NOVERSION
 
-for /f "delims=" %%x in (..\include\lsversion.sh) do (set "%%x")
+for /f "delims=" %%x in (%LINDOAPI_HOME%\include\lsversion.sh) do (set "%%x")
 
 echo Checking for LINDO API %LS_MAJOR%.%LS_MINOR% ...
 if !R_ARCHITETURE! == "64bit" (
@@ -349,7 +349,7 @@ echo Error: Minimum R version required is %RMIN%, yours is %R_VER%.
 goto END
 
 :NOVERSION
-echo Error: '../include/lsversion.sh' file was not found
+echo Error: '%LINDOAPI_HOME%/include/lsversion.sh' file was not found
 echo.
 goto END
 
