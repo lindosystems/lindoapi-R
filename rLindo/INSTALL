@@ -19,9 +19,9 @@
 
 2. Navigate to the directory `c:\lindoapi\R`, where the file `rLindo_x.y.tar.gz` is located.
 
-3. Run the following batch script to install the rLindo package.
+3. Run the following batch script to install the rLindo package, where `<nn>` stands for the rtools version.
 
-        C:> install-rlindo.bat
+        C:> install-rlindo-r<nn>.bat
 
 4. Test whether rLindo package has been installed successfully by using the following command in R.
 
