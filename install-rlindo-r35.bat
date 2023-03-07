@@ -304,7 +304,12 @@ if not exist %LINDOAPI_HOME%/lib. (
 	echo %LINDOAPI_HOME%/lib is not a valid library path
 	goto END
 )
-echo Checking for LINDO API 14.0...
+
+if not exist ..\include\lsversion.sh goto NOVERSION
+
+for /f "delims=" %%x in (..\include\lsversion.sh) do (set "%%x")
+
+echo Checking for LINDO API %LS_MAJOR%.%LS_MINOR% ...
 if !R_ARCHITETURE! == "64bit" (
     if not exist %LINDOAPI_HOME%\bin\win64\. (
         echo ERROR: Can not find 64-bit LINDO API %LS_MAJOR%.%LS_MINOR%.
@@ -323,9 +328,6 @@ for /F "tokens=1,2 delims=." %%a in (^"%R_VERSION:"=.%^") do set R_VER=%%a.%%b
 rem echo %R_VER%
 if "!R_VER!" LSS "%RMIN%" goto R_NOSUPPORT
 
-if not exist ..\include\lsversion.sh goto NOVERSION
-
-for /f "delims=" %%x in (..\include\lsversion.sh) do (set "%%x")
 echo Checking source package rLindo_%LS_MAJOR%.%LS_MINOR%.tar.gz
 if exist rLindo_%LS_MAJOR%.%LS_MINOR%.tar.gz (
     echo Ok.. Installing...

@@ -1053,9 +1053,9 @@ rLSreadVarStartPoint <- function(model,
 
 rLSloadBlockStructure <- function(model,
                                   nBlock,
-								  panRblock,
-								  panCblock,
-								  nType)                          
+                                  panRblock,
+                                  panCblock,
+                                  nType)                          
 {
 
     ans <- .Call("rcLSloadBlockStructure", PACKAGE = "rLindo", 
@@ -1117,8 +1117,8 @@ rLScheckConvexity <- function(model)
 
 rLSsolveSBD <- function(model,
                         nStages,
-					    panRowStage,
-					    panColStage)
+                        panRowStage,
+                        panColStage)
 {
 
     ans <- .Call("rcLSsolveSBD", PACKAGE = "rLindo", 
@@ -1539,9 +1539,10 @@ rLScalinfeasMIPsolution <- function(model,
 
 rLSgetRoundMIPsolution <- function(model,
                                    padPrimal = NULL,
-                                   iUseOpti)
+                                   iUseOpti,
+                                   iCallerFunc)
 {
-	if (is.null(padPrimal)) 
+    if (is.null(padPrimal)) 
     {
         rpadPrimal <- as.null(padPrimal)
     }
@@ -1553,7 +1554,8 @@ rLSgetRoundMIPsolution <- function(model,
     ans <- .Call("rcLSgetRoundMIPsolution", PACKAGE = "rLindo", 
                  model,
                  rpadPrimal,
-                 as.integer(iUseOpti))
+                 as.integer(iUseOpti),
+                 as.integer(iCallerFunc))
     return(ans)
 }
 
@@ -3661,7 +3663,7 @@ rLSreadCBFFile <- function(spModel,pszFname) {
   return (ans)
 }
 
-rLSreadMPXFile <- function(spModel	,pszFname) {
+rLSreadMPXFile <- function(spModel  ,pszFname) {
   ans <- .Call("rcLSreadMPXFile", PACKAGE = "rLindo"
         ,spModel
         ,as.character(pszFname)

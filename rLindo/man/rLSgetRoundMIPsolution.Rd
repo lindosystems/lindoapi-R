@@ -10,13 +10,14 @@
 
 
 \usage{
-  rLSgetRoundMIPsolution(model,padPrimal = NULL,iUseOpti)
+  rLSgetRoundMIPsolution(model,padPrimal = NULL,iUseOpti,iCallerFunc)
 }
 
 \arguments{
  \item{model}{A LINDO API model object, returned by \code{\link{rLScreateModel}}.}
  \item{padPrimal}{The primal solution. If it is NULL, the solution in \code{model} will be rounded.}
  \item{iUseOpti}{Whether to use reoptimization after integers have been rounded and fixed to there optimal value.}
+ \item{iCallerFunc}{Reserved for future use, user can pass any integer value.}
 }
 
 \value{

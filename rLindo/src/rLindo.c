@@ -6655,12 +6655,14 @@ ErrorReturn:
 
 SEXP rcLSgetRoundMIPsolution(SEXP      sModel,
                              SEXP      spadPrimal,
-                             SEXP      siUseOpti)
+                             SEXP      siUseOpti,
+							 SEXP      siCallerFunc)
 {
     prLSmodel prModel;
     pLSmodel  pModel;
     double    *padPrimal;
     int       iUseOpti = Rf_asInteger(siUseOpti);
+	int       callerFunc = Rf_asInteger(siCallerFunc);
 
     int       *pnErrorCode;
     SEXP      spnErrorCode = R_NilValue;
@@ -6712,7 +6714,8 @@ SEXP rcLSgetRoundMIPsolution(SEXP      sModel,
                                          pdObjRound,
                                          pdPfeasRound,
                                          pnstatus,
-                                         iUseOpti);
+                                         iUseOpti,
+										 callerFunc);
 
 ErrorReturn:
     //allocate list

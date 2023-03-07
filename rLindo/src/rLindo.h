@@ -547,7 +547,8 @@ SEXP rcLScalinfeasMIPsolution(SEXP sModel,
 
 SEXP rcLSgetRoundMIPsolution(SEXP      sModel,
                              SEXP      spadPrimal,
-                             SEXP      siUseOpti);
+                             SEXP      siUseOpti,
+							 SEXP      siCallerFunc);
 
 //no SEXP rcLSgetDuplicateColumns(SEXP  sModel,SEXP  snCheckVals);
 

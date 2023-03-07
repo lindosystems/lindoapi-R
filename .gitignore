@@ -41,3 +41,4 @@ vignettes/*.pdf
 
 # Lindo additions
 _*.sh
+*.bak
