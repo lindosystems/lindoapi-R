@@ -41,4 +41,7 @@ vignettes/*.pdf
 
 # Lindo additions
 _*.sh
+*.sh.old
 *.bak
+rLindo/src/tmp
+rLindo_temp*
