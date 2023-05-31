@@ -63,8 +63,14 @@ rLSoptimize(rModel,LS_METHOD_FREE)
 
 #Get solution information
 rLSgetDInfo(rModel,LS_DINFO_POBJ)
-rLSgetPrimalSolution(rModel)
-rLSgetDualSolution(rModel)
+x<-rLSgetPrimalSolution(rModel)
+y<-rLSgetDualSolution(rModel)
+dj<-rLSgetReducedCosts(rModel)
+s<-rLSgetSlacks(rModel)
+y
+s
+x
+dj
 rLSwriteVarPriorities(rModel,"samples/ex_lp.pri",0)
 #Delete the model and environment
 rLSdeleteModel(rModel)

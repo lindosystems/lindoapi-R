@@ -4240,7 +4240,7 @@ SEXP rcLSgetSlacks(SEXP  sModel)
     nProtect += 1;
     padSlack = NUMERIC_POINTER(spadSlack);
 
-    *pnErrorCode = LSgetDualSolution(pModel,padSlack);
+    *pnErrorCode = LSgetGetSlacks(pModel,padSlack);
 
 
 ErrorReturn:
