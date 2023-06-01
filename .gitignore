@@ -43,5 +43,6 @@ vignettes/*.pdf
 _*.sh
 *.sh.old
 *.bak
+*.pri
 rLindo/src/tmp
 rLindo_temp*
