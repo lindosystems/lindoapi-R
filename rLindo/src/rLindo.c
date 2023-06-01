@@ -253,16 +253,20 @@ SEXP rcLScreateEnv()
         return R_NilValue;
     }
 
-    sprintf(pachLicPath,"%s//license//lndapi%d%d.lic",getenv("LINDOAPI_HOME"),LS_MAJOR_VER_NUMBER,LS_MINOR_VER_NUMBER);
-    fprintf(stdout,"Loading license file '%s'\n",pachLicPath); fflush(stdout);
-    nErrorCode = LSloadLicenseString(pachLicPath,MY_LICENSE_KEY);
-
-    if(nErrorCode != LSERR_NO_ERROR)
     {
-        Rprintf("Failed to load license key (error %d)\n",nErrorCode);
+      sprintf(pachLicPath, "%s//license//lndapi%d%d.lic", getenv("LINDOAPI_HOME"), LS_MAJOR_VER_NUMBER, LS_MINOR_VER_NUMBER);
+#if 0
+      fprintf(stdout, "Loading license file '%s'\n", pachLicPath); fflush(stdout);
+#endif
+      nErrorCode = LSloadLicenseString(pachLicPath, MY_LICENSE_KEY);
+      if (nErrorCode != LSERR_NO_ERROR)
+      {
+        Rprintf("Failed to load license key (error %d)\n", nErrorCode);
         R_FlushConsole();
         return R_NilValue;
+      }
     }
+
 
     pEnv = LScreateEnv(&nErrorCode, MY_LICENSE_KEY);
     if(nErrorCode)
@@ -280,6 +284,64 @@ SEXP rcLScreateEnv()
 
     return sEnv;
 }
+
+
+SEXP rcLScreateEnvByKey(SEXP slicenseKey)
+{
+  int      nErrorCode = LSERR_NO_ERROR;
+  char     MY_LICENSE_KEY[1024];
+  pLSenv   pEnv;
+  prLSenv  prEnv = NULL;
+  char     pachLicPath[256];
+  SEXP     sEnv = R_NilValue;
+  char* licenseKey = (char*)CHAR(STRING_ELT(slicenseKey, 0));
+
+  tagLSprob = Rf_install("TYPE_LSPROB");
+  tagLSenv = Rf_install("TYPE_LSENV");
+  tagLSsample = Rf_install("TYPE_LSSAMP");
+  tagLSrandGen = Rf_install("TYPE_LSRG");
+
+  prEnv = (prLSenv)malloc(sizeof(rLSenv) * 1);
+  if (prEnv == NULL)
+  {
+    return R_NilValue;
+  }
+
+  if (!licenseKey) {
+    sprintf(pachLicPath, "%s//license//lndapi%d%d.lic", getenv("LINDOAPI_HOME"), LS_MAJOR_VER_NUMBER, LS_MINOR_VER_NUMBER);
+#if 0
+    fprintf(stdout, "Loading license file '%s'\n", pachLicPath); fflush(stdout);
+#endif
+    nErrorCode = LSloadLicenseString(pachLicPath, MY_LICENSE_KEY);
+    if (nErrorCode != LSERR_NO_ERROR)
+    {
+      Rprintf("Failed to load license key (error %d)\n", nErrorCode);
+      R_FlushConsole();
+      return R_NilValue;
+    }
+  }
+  else {
+    strncpy(MY_LICENSE_KEY, licenseKey, 1024-1);
+  }
+
+
+  pEnv = LScreateEnv(&nErrorCode, MY_LICENSE_KEY);
+  if (nErrorCode)
+  {
+    Rprintf("Failed to create enviroment object (error %d)\n", nErrorCode);
+    R_FlushConsole();
+    return R_NilValue;
+  }
+
+  prEnv->pEnv = pEnv;
+
+  sEnv = R_MakeExternalPtr(prEnv, R_NilValue, R_NilValue);
+
+  R_SetExternalPtrTag(sEnv, tagLSenv);
+
+  return sEnv;
+}
+
 
 SEXP rcLScreateModel(SEXP sEnv)
 {

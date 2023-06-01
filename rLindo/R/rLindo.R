@@ -13,6 +13,16 @@ rLScreateEnv <- function(){
     return(ans)
 }
 
+rLScreateEnvByKey <- function(szKey) {
+  if (is.null(szKey)) {
+    # Handle the NULL case
+    ans <- .Call("rcLScreateEnv", PACKAGE = "rLindo")
+  } else {
+    ans <- .Call("rcLScreateEnvByKey", PACKAGE = "rLindo", as.character(szKey))
+    return(ans)
+  }
+}
+
 rLScreateModel <- function(env){
 
     ans <- .Call("rcLScreateModel", PACKAGE = "rLindo", env)

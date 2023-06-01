@@ -1608,6 +1608,7 @@ LS_GA_CROSS_TWOPOINT,
 #----------------------LINDO Functions------------------#
 ## Structure Creation and Deletion Routines (5)
 rLScreateEnv,
+rLScreateEnvByKey,
 rLScreateModel,
 rLSdeleteEnv,
 rLSdeleteModel,

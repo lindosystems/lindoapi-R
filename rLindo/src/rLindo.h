@@ -49,7 +49,7 @@ extern SEXP tagLSrandGen;
  * Structure Creation and Deletion Routines (5)       *
  ******************************************************/
 SEXP rcLScreateEnv();
-
+SEXP rcLScreateEnvByKey(SEXP szKey);
 SEXP rcLScreateModel(SEXP sEnv);
 
 SEXP rcLSdeleteEnv(SEXP sEnv);
