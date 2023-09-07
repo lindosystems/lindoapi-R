@@ -18,7 +18,7 @@ cbFunc <- function(sModel,iLoc,sData=NA) {
 }
 
 #Create LINDO enviroment object
-license_key_file <- Sys.getenv("LINDOAPI_LICENSE_KEY")
+license_key_file <- Sys.getenv("LINDOAPI_LICENSE_FILE")
 #print(license_key_file)
 sKey <- rLSloadLicenseString(license_key_file)
 #print(sKey)
