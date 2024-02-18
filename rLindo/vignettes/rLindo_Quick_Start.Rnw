@@ -69,7 +69,7 @@ Tell R to connect to rLindo by typing:
 \subsubsection{Linux or other Unix-like systems}
 NOTE: Make sure to login as the 'root' user to perform these steps.
 \begin{enumerate}
-\item Install LINDO API x.y for the host platform (e.g. Linux 32 or 64-bit) where x.y is the version tag, e.g. 14.0.
+\item Install LINDO API x.y for the host platform (e.g. Linux 32 or 64-bit) where x.y is the version tag, e.g. 15.0.
 
 \item Install R (and R-devel if R headers are missing on your system).
 

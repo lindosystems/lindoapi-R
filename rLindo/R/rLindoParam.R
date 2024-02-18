@@ -1,16 +1,15 @@
  #####################################################################
  ##
- ##    LINDO API Version 14.0
- ##    Copyright (c) 2000-2022
+ ##    LINDO API Version 15.0
+ ##    Copyright (c) 2000-2024
  ##
  ##    LINDO Systems, Inc.            312.988.7422
  ##    1415 North Dayton St.          info@lindo.com
  ##    Chicago, IL 60622              http://www.lindo.com
  ##
- ##    $Id: lindo.r 3042 2022-10-09 23:46:14Z mka $
+ ##    $Id: lindo.r 3311 2024-02-15 05:05:29Z mka $
  ##
  #####################################################################/
-
 
 
  #####################################################################
@@ -18,11 +17,11 @@
  #####################################################################/
 
  # Version macros #/
- LS_MAJOR_VER_NUMBER                                          <- 14L
+ LS_MAJOR_VER_NUMBER                                          <- 15L
  LS_MINOR_VER_NUMBER                                          <- 0L
- LS_REV_VER_NUMBER                                            <- 191L
- LS_VER_NUMBER                                                <- 1400L
- LS_BUILD_VER_NUMBER                                          <- 5099L
+ LS_REV_VER_NUMBER                                            <- 126L
+ LS_VER_NUMBER                                                <- 1500L
+ LS_BUILD_VER_NUMBER                                          <- 6099L
 
  LS_MIN                                                       <- +1L
  LS_MAX                                                       <- -1L
@@ -160,6 +159,14 @@
  LS_XSOLVER_CBC                                               <- 12L
  LS_XSOLVER_XPR                                               <- 13L
  LS_XSOLVER_HIGHS                                             <- 14L
+ LS_XSOLVER_IPOPT                                             <- 15L
+ LS_XSOLVER_HIGHSLP                                           <- 16L
+ LS_XSOLVER_COPT                                              <- 17L
+ LS_XSOLVER_COPTLP                                            <- 18L
+ LS_XSOLVER_MYUSER                                            <- 94L
+ LS_XSOLVER_TABOX                                             <- 95L
+ LS_XSOLVER_MUMPS                                             <- 96L
+ LS_XSOLVER_MUPARSER                                          <- 97L
  LS_XSOLVER_LUA                                               <- 98L
  LS_XSOLVER_XLINDO                                            <- 99L
 
@@ -227,8 +234,9 @@
  LS_IPARAM_FIND_SYMMETRY_PRINT_LEVEL                          <- 1056L
  LS_IPARAM_TUNER_PRINT_LEVEL                                  <- 1057L
  LS_IPARAM_DEFAULT_SEED                                       <- 1058L
+ LS_IPARAM_XSOLVER_LOG_LEVEL                                  <- 1059L
 
-    # Generic solver parameters (1251 - 1500) #/
+   # Generic solver parameters (1251 - 1500) #/
  LS_IPARAM_SOLVER_IUSOL                                       <- 1251L
  LS_IPARAM_SOLVER_TIMLMT                                      <- 1252L
  LS_DPARAM_SOLVER_CUTOFFVAL                                   <- 1253L
@@ -246,7 +254,7 @@
  LS_IPARAM_SOLVER_METHOD                                      <- 1265L
  LS_IPARAM_SOLVER_DUALSOL                                     <- 1266L
 
-    # Advanced parameters for the simplex method (4000 - 41++) #/
+   # Advanced parameters for the simplex method (4000 - 41++) #/
  LS_IPARAM_LP_SCALE                                           <- 4029L
  LS_IPARAM_LP_ITRLMT                                          <- 4030L
  LS_IPARAM_SPLEX_PPRICING                                     <- 4031L
@@ -1017,6 +1025,8 @@
  EP_LOGSUMAEXP                                                <- 1188L
  EP_EXPMODIV                                                  <- 1189L
  EP_POWERUTILITY                                              <- 1190L
+ EP_POLYNOMIAL                                                <- 1191L
+ EP_CENSOR                                                    <- 1192L
 
 
  # Model and solution information codes ( 110xx-140xx) #/
@@ -1099,6 +1109,7 @@
  LS_DINFO_OBJRELTOL                                           <- 11076L
  LS_DINFO_OBJABSTOL                                           <- 11077L
  LS_DINFO_OBJTIMLIM                                           <- 11078L
+ LS_IINFO_NUM_NLP_COUNT                                       <- 11079L
 
  # LP and NLP related info (11200-11299)#/
  LS_IINFO_METHOD                                              <- 11200L
@@ -1749,6 +1760,7 @@
  LSERR_XSOLVER_NOT_SUPPORTED                                  <- 2091L
  LSERR_XSOLVER_INVALID_VERSION                                <- 2092L
  LSERR_FDE_NOT_INSTALLED                                      <- 2093L
+ LSERR_MODEL_NOT_SUPPORTED_XSOLVER                            <- 2094L
 
     #! @ingroup LSmatrixOps @{ #/
 
@@ -1994,7 +2006,6 @@
  LSERR_SCRIPT                                                 <- 2700L
 
     #! @} #/
-
  LSERR_LAST_ERROR                                             <- 2751L
 
 
@@ -2058,6 +2069,8 @@
  LS_NMETHOD_SLP                                               <- 8L
  LS_NMETHOD_MSW_GRG                                           <- 9L
  LS_NMETHOD_IPOPT                                             <- 10L
+ LS_NMETHOD_RESERVED                                          <- 11L
+ LS_NMETHOD_RESERVED1                                         <- 12L
 
 
  LS_PROB_SOLVE_FREE                                           <- 0L
@@ -2182,6 +2195,7 @@
  LS_MIP_MODE_NO_BRANCH_CUTS                                   <- 16L
  LS_MIP_MODE_NO_LP_BARRIER                                    <- 32L
  LS_MIP_MODE_NO_LSLVDP                                        <- 64L
+ LS_MIP_MODE_SOS2_GRAY                                        <- 128L
 
 
  # Bit mask for cut generation levels. Use sums to
@@ -2428,7 +2442,7 @@
 
 
  # NCM methods #/
- LS_NCM_STD                                                   <- 	1L
+ LS_NCM_STD                                                   <- 1L
  LS_NCM_GA                                                    <- 2L
  LS_NCM_ALTP                                                  <- 4L
  LS_NCM_L2NORM_CONE                                           <- 8L
@@ -2466,6 +2480,7 @@
  LS_MSW_MODE_SAMPLE_FREEVARS                                  <- 64L
  LS_MSW_MODE_PRECOLLECT                                       <- 128L
  LS_MSW_MODE_POWER_SOLVE                                      <- 256L
+ LS_MSW_MODE_SHARE_STACK                                      <- 512L
 
 
  LS_GA_CROSS_SBX                                              <- 101L
@@ -2492,6 +2507,12 @@
  LS_SOLVER_MODE_LEX_EXPFAIL                                   <- 64L
    #! resolve failed lex-model #/
  LS_SOLVER_MODE_LEX_RESOLVEFAIL                               <- 128L
+   #! full-aggregation #/
+ LS_SOLVER_MODE_FULL_AGGR                                     <- 256L
+   #! add PM1 restrictions #/
+ LS_SOLVER_MODE_ADD_PM1_SQR                                   <- 512L
+   #! add PM1 restrictions abs#/
+ LS_SOLVER_MODE_ADD_PM1_ABS                                   <- 1024L
 
 
  LS_PARCLASS_BITMASK                                          <- 1L
@@ -2506,6 +2527,7 @@
  LS_PARCLASS_MOD                                              <- 2048L
  LS_PARCLASS_HIT                                              <- 4096L
  LS_PARCLASS_ZSTATIC                                          <- 8192L
+
 
 
  #####################################################################

@@ -1,5 +1,5 @@
 /*  rLindo.c
-    The R interface to LINDO API 11.0 - 14.0
+    The R interface to LINDO API 11.0 - 15.0
     This file includes all C wrapper functions for LINDO API C functions.
     Copyright (C) 2017-2022 LINDO Systems.
 */

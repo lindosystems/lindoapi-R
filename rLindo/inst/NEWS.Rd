@@ -39,7 +39,7 @@
   }
 } 
 
-\section{Changes in version 14.0.1}{
+\section{Changes in version 15.0.1}{
   \itemize{
      \item{Added new parameters and functions.}
   }
