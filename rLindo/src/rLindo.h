@@ -1,7 +1,7 @@
 /*  rLindo.h
-    The R interface to LINDO API 11.0 - 13.0
+    The R interface to LINDO API 11.0 - 14.0
     This file includes all C wrapper functions for LINDO API C functions.
-    Copyright (C) 2017-2020 LINDO Systems.
+    Copyright (C) 2017-2024 LINDO Systems.
 */
 
 #include "stdlib.h"
