@@ -26,10 +26,10 @@ if test -z "$PKG_LIBS" ; then
       LIBPATH="${LINDOAPI_HOME}/bin/osx64x86"
       LDFLAGS="-Wl,-rpath,@loader_path/${LIBPATH} -Xlinker -bind_at_load"
       PKG_LIBS="-L${LIBPATH} -llindo64 -pthread -lSystem -lc -ldl -lm ${LDFLAGS}"
-   elif test -d ${LINDOAPI_HOME}/bin/osx32x86 ; then
-      LIBPATH="${LINDOAPI_HOME}/bin/osx32x86"
+   elif test -d ${LINDOAPI_HOME}/bin/osx64arm ; then
+      LIBPATH="${LINDOAPI_HOME}/bin/osx64arm"
       LDFLAGS="-Wl,-rpath,@loader_path/${LIBPATH} -Xlinker -bind_at_load"
-      PKG_LIBS="-L${LIBPATH} -llindo -pthread -lSystem -lc -ldl -lm ${LDFLAGS}"
+      PKG_LIBS="-L${LIBPATH} -llindo64 -pthread -lSystem -lc -ldl -lm ${LDFLAGS}"
    fi
 fi
 
