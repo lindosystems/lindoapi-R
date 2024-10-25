@@ -4904,7 +4904,7 @@ SEXP rcLSgetQCData(SEXP  sModel)
 
     CHECK_MODEL_ERROR;
 
-    *pnErrorCode = LSgetInfo(pModel,LS_IINFO_NUM_NONZ,&nNnz);
+    *pnErrorCode = LSgetInfo(pModel,LS_IINFO_NUM_QC_NONZ,&nNnz);
     CHECK_ERRCODE;
 
     PROTECT(spaiQCrows = NEW_INTEGER(nNnz));
