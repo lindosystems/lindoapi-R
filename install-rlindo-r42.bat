@@ -6,7 +6,7 @@ echo         Lindo Systems, Inc.
 echo ---------------------------------------
 
 setlocal enabledelayedexpansion
-set RCORE_VER=4.2.1
+set RCORE_VER=4.2.2
 set RCORE_EXE=R-%RCORE_VER%-win.exe
 set RTOOLS_VER=rtools42-5253-5107.exe
 set RMIN=4.0
