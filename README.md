@@ -21,7 +21,7 @@ Installation for Windows
         C:> set LINDOAPI_HOME="c:\lindoapi"
         
     
-2.  Navigate to the directory `c:\lindoapi\R`, where the file `rLindo_x.y.tar.gz` is located.
+2.  Navigate to the directory `c:\lindoapi\R`, where the folder `rLindo` is located.
     
 3.  Run the following batch script to install the rLindo package, where `<nn>` stands for the rtools version. 
     
@@ -53,7 +53,7 @@ Installation for Linux and Mac/OSX
     
     To have this variable set automatically, add the above line to your `~/.bashrc` file.
     
-2.  Navigate to the directory `/opt/lindoapi/R`, where the file `rLindo_x.y.tar.gz` is located.
+2.  Navigate to the directory `/opt/lindoapi/R`, where the folder `rLindo` is located.
     
 3.  Run the following batch script to install the rLindo package.
     

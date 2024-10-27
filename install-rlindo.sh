@@ -21,8 +21,13 @@ echo Looking for source package rLindo_$LS_MAJOR.$LS_MINOR.tar.gz
 if [ -f rLindo_$LS_MAJOR.$LS_MINOR.tar.gz ]; then
 	echo Ok.. Installing...
 else
-	echo Error: source package rLindo_$LS_MAJOR.$LS_MINOR.tar.gz not found
-	exit
+	echo WARNING: source package rLindo_$LS_MAJOR.$LS_MINOR.tar.gz not found
+	echo WARNING: trying to build installation package from the source.
+	R CMD build --no-build-vignettes rLindo	
+	if [ ! -f rLindo_$LS_MAJOR.$LS_MINOR.tar.gz ]; then
+		echo ERROR: source package rLindo_$LS_MAJOR.$LS_MINOR.tar.gz cannot be built
+		exit 1
+	fi
 fi
 
 command -v R --help>/dev/null 2>&1 || { 

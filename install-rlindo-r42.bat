@@ -333,8 +333,13 @@ echo Checking source package rLindo_%LS_MAJOR%.%LS_MINOR%.tar.gz
 if exist rLindo_%LS_MAJOR%.%LS_MINOR%.tar.gz (
     echo Ok.. Installing...
 ) else (
-    echo Error: source package rLindo_%LS_MAJOR%.%LS_MINOR%.tar.gz not found
-    goto END
+    echo WARNING: source package rLindo_%LS_MAJOR%.%LS_MINOR%.tar.gz not found
+	echo WARNING: trying to build installation package from the source.
+	R CMD build --no-build-vignettes rLindo
+    if not exist rLindo_%LS_MAJOR%.%LS_MINOR%.tar.gz (
+		echo ERROR: source package rLindo_%LS_MAJOR%.%LS_MINOR%.tar.gz cannot be built.
+		goto END
+	)
 )
 
 rem FOR /F "tokens=" %%i in (' "R --version 2> nul" ') do SET Routput=%%i
