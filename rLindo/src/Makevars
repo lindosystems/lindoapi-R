@@ -1,3 +1,2 @@
-source "${LINDOAPI_HOME}/include/platform.inc"
 PKG_CPPFLAGS=-I${LINDOAPI_HOME}/include
-PKG_LIBS=-L${LINDOAPI_HOME}/bin/${PLATFORM} -llindo64 -lmosek64 -lconsub3 -lpthread -Wl,-rpath-link,${LINDOAPI_HOME}/bin/${PLATFORM} -Wl,-rpath,${LINDOAPI_HOME}/bin/${PLATFORM}
+PKG_LIBS=-L${LINDOAPI_HOME}/bin/osx64arm -llindo64 -lmosek64 -lconsub3 -lpthread -Wl,-rpath-link,${LINDOAPI_HOME}/bin/osx64arm -Wl,-rpath,${LINDOAPI_HOME}/bin/osx64arm
