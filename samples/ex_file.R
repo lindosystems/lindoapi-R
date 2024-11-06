@@ -72,6 +72,15 @@ lindo_read_file <- function(rModel, file) {
 lindoapi_solve_model <- function(rModel,time_limit = Inf,use_gop=FALSE) {
     numVars <- rLSgetIInfo(rModel,LS_IINFO_NUM_VARS)[2]$pnResult
     numCont <- rLSgetIInfo(rModel,LS_IINFO_NUM_CONT)[2]$pnResult
+    has_int <- numVars > numCont
+    if (has_int==FALSE) {
+        ## check if implicit integers exist            
+        nCards <- rLSgetIInfo(rModel,LS_IINFO_NUM_VARS_CARD)[2]$pnResult
+        nSos1 <- rLSgetIInfo(rModel,LS_IINFO_NUM_VARS_SOS1)[2]$pnResult        
+        nSos2 <- rLSgetIInfo(rModel,LS_IINFO_NUM_VARS_SOS2)[2]$pnResult
+        nSos3 <- rLSgetIInfo(rModel,LS_IINFO_NUM_VARS_SOS3)[2]$pnResult        
+        has_int <- nCards+nSos1+nSos2+nSos3 > 0
+    }    
     modelType <- rLSgetIInfo(rModel,LS_IINFO_MODEL_TYPE)[2]$pnResult
 
     nfo = list()
@@ -82,7 +91,7 @@ lindoapi_solve_model <- function(rModel,time_limit = Inf,use_gop=FALSE) {
         r <- rLSsolveGOP(rModel)
     }
     
-    if (numCont == numVars) {
+    if (has_int) {
         if (use_gop==FALSE) {
             if ( is.finite(time_limit) ) {
                 rLSsetModelDouParameter(model=rModel,nParameter=LS_DPARAM_SOLVER_TIMLMT,dValue=time_limit) # time limit

@@ -4806,7 +4806,7 @@ SEXP rcLSgetLPData(SEXP  sModel)
     pachConTypes = (char *)malloc(sizeof(char)*(nCons+1));
     pachConTypes[nCons] = '\0';
 
-    PROTECT(spaiAcols = NEW_INTEGER(nVars));
+    PROTECT(spaiAcols = NEW_INTEGER(nVars+1));
     nProtect += 1;
     paiAcols = INTEGER_POINTER(spaiAcols);
 
@@ -4974,19 +4974,27 @@ SEXP rcLSgetQCDatai(SEXP  sModel,
     SEXP      ListNames = R_NilValue;
     int       nNumItems = 5;
     int       nIdx, nProtect = 0;
-    int       nNnz;
+    int       nNnz=0;
 
     //errorcode item
     INI_ERR_CODE;
 
     CHECK_MODEL_ERROR;
 
-    *pnErrorCode = LSgetInfo(pModel,LS_IINFO_NUM_NONZ,&nNnz);
+    *pnErrorCode = LSgetQCDatai(pModel,
+        iCon,
+        &nNnz,NULL,NULL,NULL);
     CHECK_ERRCODE;
 
     PROTECT(spnQCnnz = NEW_INTEGER(1));
     nProtect += 1;
     pnQCnnz = INTEGER_POINTER(spnQCnnz);
+
+    if (nNnz == 0)
+    {
+        *pnQCnnz = 0;
+        goto ErrorReturn;
+    }
 
     PROTECT(spaiQCcols1 = NEW_INTEGER(nNnz));
     nProtect += 1;
