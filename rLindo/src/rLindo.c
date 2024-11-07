@@ -4769,7 +4769,7 @@ SEXP rcLSgetLPData(SEXP  sModel)
                             "pachConTypes", "paiAcols", "panAcols", "padAcoef",
                             "paiArows", "padL", "padU"};
     SEXP      ListNames = R_NilValue;
-    int       nNumItems = 11;
+    int       nNumItems = 12;
     int       nIdx, nProtect = 0;
     int       nCons, nVars, nNnz;
 
@@ -4864,11 +4864,11 @@ ErrorReturn:
         SET_VECTOR_ELT(rList, 4, spadB);
         SET_VECTOR_ELT(rList, 5, spachConTypes);
         SET_VECTOR_ELT(rList, 6, spaiAcols);
-        SET_VECTOR_ELT(rList, 6, spanAcols);
-        SET_VECTOR_ELT(rList, 7, spadAcoef);
-        SET_VECTOR_ELT(rList, 8, spaiArows);
-        SET_VECTOR_ELT(rList, 9, spadL);
-        SET_VECTOR_ELT(rList, 10, spadU);
+        SET_VECTOR_ELT(rList, 7, spanAcols);
+        SET_VECTOR_ELT(rList, 8, spadAcoef);
+        SET_VECTOR_ELT(rList, 9, spaiArows);
+        SET_VECTOR_ELT(rList, 10, spadL);
+        SET_VECTOR_ELT(rList, 11, spadU);
     }
 
     UNPROTECT(nProtect + 2);
@@ -6064,7 +6064,8 @@ SEXP rcLSgetLPConstraintDatai(SEXP      sModel,
 
     PROTECT(spchConType = NEW_CHARACTER(1));
     nProtect += 1;
-    pchConType = (char *)malloc(sizeof(char)*(1));
+    pchConType = (char *)malloc(sizeof(char)*(2));
+    pchConType[1] = '\0';
 
     PROTECT(spdB = NEW_NUMERIC(1));
     nProtect += 1;
@@ -17935,7 +17936,7 @@ SEXP rcLSgetObjective(SEXP spModel)
 
 
   // Get C pointers
-  PROTECT(spdObj = NEW_NUMERIC(n));
+  PROTECT(spdObj = NEW_NUMERIC(1));
   nProtect += 1;
   dvecptr[2] = pdObj = NUMERIC_POINTER(spdObj); //pdObj
 

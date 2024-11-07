@@ -1447,7 +1447,7 @@ rLSgetLPConstraintDatai <- function(model,
                                     iCon)
 {
 
-    ans <- .Call("rLSgetLPConstraintDatai", PACKAGE = "rLindo", 
+    ans <- .Call("rcLSgetLPConstraintDatai", PACKAGE = "rLindo", 
                  model,
                  as.integer(iCon))
     return(ans)
