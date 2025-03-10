@@ -1,3 +1,5 @@
+REM Description: Create a static library from R.dll
+REM Date: 2021-06-02
 @echo off
 set "MACHINE_TYPE=%1"
 
