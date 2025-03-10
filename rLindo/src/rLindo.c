@@ -4769,7 +4769,7 @@ SEXP rcLSgetLPData(SEXP  sModel)
                             "pachConTypes", "paiAcols", "panAcols", "padAcoef",
                             "paiArows", "padL", "padU"};
     SEXP      ListNames = R_NilValue;
-    int       nNumItems = 11;
+    int       nNumItems = 12;
     int       nIdx, nProtect = 0;
     int       nCons, nVars, nNnz;
 
@@ -4806,7 +4806,7 @@ SEXP rcLSgetLPData(SEXP  sModel)
     pachConTypes = (char *)malloc(sizeof(char)*(nCons+1));
     pachConTypes[nCons] = '\0';
 
-    PROTECT(spaiAcols = NEW_INTEGER(nVars));
+    PROTECT(spaiAcols = NEW_INTEGER(nVars+1));
     nProtect += 1;
     paiAcols = INTEGER_POINTER(spaiAcols);
 
@@ -4904,7 +4904,7 @@ SEXP rcLSgetQCData(SEXP  sModel)
 
     CHECK_MODEL_ERROR;
 
-    *pnErrorCode = LSgetInfo(pModel,LS_IINFO_NUM_NONZ,&nNnz);
+    *pnErrorCode = LSgetInfo(pModel,LS_IINFO_NUM_QC_NONZ,&nNnz);
     CHECK_ERRCODE;
 
     PROTECT(spaiQCrows = NEW_INTEGER(nNnz));
@@ -4974,19 +4974,27 @@ SEXP rcLSgetQCDatai(SEXP  sModel,
     SEXP      ListNames = R_NilValue;
     int       nNumItems = 5;
     int       nIdx, nProtect = 0;
-    int       nNnz;
+    int       nNnz=0;
 
     //errorcode item
     INI_ERR_CODE;
 
     CHECK_MODEL_ERROR;
 
-    *pnErrorCode = LSgetInfo(pModel,LS_IINFO_NUM_NONZ,&nNnz);
+    *pnErrorCode = LSgetQCDatai(pModel,
+        iCon,
+        &nNnz,NULL,NULL,NULL);
     CHECK_ERRCODE;
 
     PROTECT(spnQCnnz = NEW_INTEGER(1));
     nProtect += 1;
     pnQCnnz = INTEGER_POINTER(spnQCnnz);
+
+    if (nNnz == 0)
+    {
+        *pnQCnnz = 0;
+        goto ErrorReturn;
+    }
 
     PROTECT(spaiQCcols1 = NEW_INTEGER(nNnz));
     nProtect += 1;
@@ -6056,7 +6064,8 @@ SEXP rcLSgetLPConstraintDatai(SEXP      sModel,
 
     PROTECT(spchConType = NEW_CHARACTER(1));
     nProtect += 1;
-    pchConType = (char *)malloc(sizeof(char)*(1));
+    pchConType = (char *)malloc(sizeof(char)*(2));
+    pchConType[1] = '\0';
 
     PROTECT(spdB = NEW_NUMERIC(1));
     nProtect += 1;
@@ -17927,7 +17936,7 @@ SEXP rcLSgetObjective(SEXP spModel)
 
 
   // Get C pointers
-  PROTECT(spdObj = NEW_NUMERIC(n));
+  PROTECT(spdObj = NEW_NUMERIC(1));
   nProtect += 1;
   dvecptr[2] = pdObj = NUMERIC_POINTER(spdObj); //pdObj
 

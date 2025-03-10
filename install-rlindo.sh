@@ -16,13 +16,18 @@ if [ ! -f $LINDOAPI_HOME/include/lsversion.sh ]; then
 	echo
 	exit
 fi
-source $LINDOAPI_HOME/include/lsversion.sh
+. $LINDOAPI_HOME/include/lsversion.sh
 echo Looking for source package rLindo_$LS_MAJOR.$LS_MINOR.tar.gz
 if [ -f rLindo_$LS_MAJOR.$LS_MINOR.tar.gz ]; then
 	echo Ok.. Installing...
 else
-	echo Error: source package rLindo_$LS_MAJOR.$LS_MINOR.tar.gz not found
-	exit
+	echo WARNING: source package rLindo_$LS_MAJOR.$LS_MINOR.tar.gz not found
+	echo WARNING: trying to build installation package from the source.
+	R CMD build --no-build-vignettes rLindo	
+	if [ ! -f rLindo_$LS_MAJOR.$LS_MINOR.tar.gz ]; then
+		echo ERROR: source package rLindo_$LS_MAJOR.$LS_MINOR.tar.gz cannot be built
+		exit 1
+	fi
 fi
 
 command -v R --help>/dev/null 2>&1 || { 
@@ -37,23 +42,30 @@ if [ -n "${R_HOME+x}" -o "$R_HOME" = "" ]; then
 	R_HOME=`R RHOME`
 fi	
 #echo R_HOME is ${R_HOME}
-
+LIBRARY=library
+if [ -d "${R_HOME}/site-library" ]; then
+	LIBRARY=site-library
+fi	
 OSYS=`uname -s`
 MACHINE=`uname -m`
 if [ ${OSYS} = "Darwin" ]; then	
-	if [ -f "${R_HOME}/library/rLindo/libs/rLindo.so" ]; then
+	if [ -f "${R_HOME}/$LIBRARY/rLindo/libs/rLindo.so" ]; then
 		echo changing the install name of rLindo package
 		if [ ${MACHINE} = "x86_64" ]; then
-			install_name_tool -change @loader_path/liblindo64.dylib \
-							${LINDOAPI_HOME}/bin/osx64x86/liblindo64.$LS_MAJOR.$LS_MINOR.dylib \
-							${R_HOME}/library/rLindo/libs/rLindo.so
+		    install_name_tool -change @loader_path/liblindo64.dylib \
+				      ${LINDOAPI_HOME}/bin/osx64x86/liblindo64.$LS_MAJOR.$LS_MINOR.dylib \
+				      ${R_HOME}/$LIBRARY/rLindo/libs/rLindo.so
+		elif [ ${MACHINE} = "arm64" ]; then
+		    install_name_tool -change @loader_path/liblindo64.dylib \
+				      ${LINDOAPI_HOME}/bin/osx64arm/liblindo64.$LS_MAJOR.$LS_MINOR.dylib \
+				      ${R_HOME}/$LIBRARY/rLindo/libs/rLindo.so
 		else
-			install_name_tool -change @loader_path/liblindo.dylib \
-							${LINDOAPI_HOME}/bin/osx32x86/liblindo.$LS_MAJOR.$LS_MINOR.dylib \
-							${R_HOME}/library/rLindo/libs/rLindo.so
+		    install_name_tool -change @loader_path/liblindo.dylib \
+				      ${LINDOAPI_HOME}/bin/osx32x86/liblindo.$LS_MAJOR.$LS_MINOR.dylib \
+				      ${R_HOME}/$LIBRARY/rLindo/libs/rLindo.so
 		fi
 	else
-		echo >&2 "Error: ${R_HOME}/library/rLindo/libs/rLindo.so is not found"
+		echo >&2 "Error: ${R_HOME}/$LIBRARY/rLindo/libs/rLindo.so is not found"
 	fi
 fi
 echo Finished
