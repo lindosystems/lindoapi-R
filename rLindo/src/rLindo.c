@@ -4864,11 +4864,11 @@ ErrorReturn:
         SET_VECTOR_ELT(rList, 4, spadB);
         SET_VECTOR_ELT(rList, 5, spachConTypes);
         SET_VECTOR_ELT(rList, 6, spaiAcols);
-        SET_VECTOR_ELT(rList, 6, spanAcols);
-        SET_VECTOR_ELT(rList, 7, spadAcoef);
-        SET_VECTOR_ELT(rList, 8, spaiArows);
-        SET_VECTOR_ELT(rList, 9, spadL);
-        SET_VECTOR_ELT(rList, 10, spadU);
+        SET_VECTOR_ELT(rList, 7, spanAcols);
+        SET_VECTOR_ELT(rList, 8, spadAcoef);
+        SET_VECTOR_ELT(rList, 9, spaiArows);
+        SET_VECTOR_ELT(rList, 10, spadL);
+        SET_VECTOR_ELT(rList, 11, spadU);
     }
 
     UNPROTECT(nProtect + 2);
