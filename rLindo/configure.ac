@@ -1,6 +1,6 @@
 dnl R interface to LINDO API
 
-AC_INIT([rLindo], 15.0.1)
+AC_INIT([rLindo], 16.0.1)
 
 dnl variable LINDOAPI_HOME must be set
 if test -z "$LINDOAPI_HOME" ; then

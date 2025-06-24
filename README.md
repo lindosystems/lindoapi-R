@@ -4,7 +4,7 @@ rLindo - The R interface to LINDO API
 Requirements
 ------------
 
-1.  LINDO API x.y [(https://www.lindo.com)](https://www.lindo.com/index.php/ls-downloads/try-lindo-api), where x.y is the version tag, e.g. 15.0
+1.  LINDO API x.y [(https://www.lindo.com)](https://www.lindo.com/index.php/ls-downloads/try-lindo-api), where x.y is the version tag, e.g. 16.0
     
 2.  R software 3.5 or later [(https://cran.r-project.org/index.html)](https://cran.r-project.org/index.html).
     

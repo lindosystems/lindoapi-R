@@ -1,7 +1,7 @@
 #rLindo.R
-#The R interface to LINDO API 15.0.
+#The R interface to LINDO API 16.0.
 #This file includes all R interface wrapper functions for LINDO API C functions.
-#Copyright (C) 2024 LINDO Systems.
+#Copyright (C) 2025 LINDO Systems.
 
 
 #************************************************************##

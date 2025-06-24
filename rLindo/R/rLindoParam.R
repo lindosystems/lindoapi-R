@@ -1,13 +1,13 @@
  #####################################################################
  ##
- ##    LINDO API Version 15.0
- ##    Copyright (c) 2000-2024
+ ##    LINDO API Version 16.0
+ ##    Copyright (c) 2000-2025
  ##
  ##    LINDO Systems, Inc.            312.988.7422
  ##    1415 North Dayton St.          info@lindo.com
  ##    Chicago, IL 60622              http://www.lindo.com
  ##
- ##    $Id: lindo.r 3311 2024-02-15 05:05:29Z mka $
+ ##    $Id: rLindoParam.R 3655 2025-06-24 15:25:12Z mka $
  ##
  #####################################################################/
 
@@ -17,11 +17,11 @@
  #####################################################################/
 
  # Version macros #/
- LS_MAJOR_VER_NUMBER                                          <- 15L
+ LS_MAJOR_VER_NUMBER                                          <- 16L
  LS_MINOR_VER_NUMBER                                          <- 0L
- LS_REV_VER_NUMBER                                            <- 126L
- LS_VER_NUMBER                                                <- 1500L
- LS_BUILD_VER_NUMBER                                          <- 6099L
+ LS_REV_VER_NUMBER                                            <- 62L
+ LS_VER_NUMBER                                                <- 1600L
+ LS_BUILD_VER_NUMBER                                          <- 7099L
 
  LS_MIN                                                       <- +1L
  LS_MAX                                                       <- -1L
