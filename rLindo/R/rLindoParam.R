@@ -753,9 +753,9 @@
  LS_DPARAM_SAMP_NCM_OPTTOL                                    <- 7707L
  LS_DPARAM_SAMP_CDSMAX                                       <- 7708L
     #! Number of parallel threads #/
- LS_IPARAM_SAMP_NUM_THREADS                                   <- 7708L
+ LS_IPARAM_SAMP_NUM_THREADS                                   <- 7738L
     #! Buffer size for random number generators #/
- LS_IPARAM_SAMP_RG_BUFFER_SIZE                                <- 7709L
+ LS_IPARAM_SAMP_RG_BUFFER_SIZE                                <- 7739L
 
     #Branch And Price parameters (8000 - 8499) #/
 
