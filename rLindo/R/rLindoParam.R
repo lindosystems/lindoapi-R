@@ -1,15 +1,16 @@
  #####################################################################
  ##
- ##    LINDO API Version 16.0
- ##    Copyright (c) 2000-2025
+ ##    LINDO API Version 17.0
+ ##    Copyright (c) 2000-2027
  ##
  ##    LINDO Systems, Inc.            312.988.7422
  ##    1415 North Dayton St.          info@lindo.com
  ##    Chicago, IL 60622              http://www.lindo.com
  ##
- ##    $Id: rLindoParam.R 3655 2025-06-24 15:25:12Z mka $
+ ##    $Id: rLindoParam.R 4107 2026-10-05 22:37:32Z mka $
  ##
  #####################################################################/
+
 
 
  #####################################################################
@@ -17,13 +18,13 @@
  #####################################################################/
 
  # Version macros #/
- LS_MAJOR_VER_NUMBER                                          <- 16L
+ LS_MAJOR_VER_NUMBER                                          <- 17L
  LS_MINOR_VER_NUMBER                                          <- 0L
- LS_REV_VER_NUMBER                                            <- 62L
- LS_VER_NUMBER                                                <- 1600L
- LS_BUILD_VER_NUMBER                                          <- 7099L
+ LS_REV_VER_NUMBER                                            <- 99L
+ LS_VER_NUMBER                                                <- 1700L
+ LS_BUILD_VER_NUMBER                                          <- 8099L
 
- LS_MIN                                                       <- +1L
+  LS_MIN                                                       <- +1L
  LS_MAX                                                       <- -1L
 
  LS_CONTYPE_GE                                                <- 'G'
@@ -302,6 +303,10 @@
  LS_IPARAM_LP_BASPOLISH_ITRLMT                                <- 4093L
  LS_IPARAM_LP_BASPOLISH_DEPTH                                 <- 4094L
  LS_IPARAM_LP_BASPOLISH_MODE                                  <- 4095L
+ LS_IPARAM_LP_FOLD_MODE                                       <- 4096L
+ LS_IPARAM_LP_XOVER_ENGINE                                       <- 4097L
+ LS_IPARAM_LP_FOLD_KBEST                                         <- 4098L
+ LS_IPARAM_LP_FOLD_LIFT                                          <- 4099L
 
     # Advanced parameters for LU decomposition (4800 - 4+++) #/
  LS_IPARAM_LU_NUM_CANDITS                                     <- 4800L
@@ -400,6 +405,9 @@
  LS_IPARAM_NLP_USECUTOFFOBJ                                   <- 2554L
  LS_IPARAM_NLP_CONIC_REFORM                                   <- 2555L
  LS_IPARAM_NLP_QP_REFORM_LEVEL                                <- 2556L
+ LS_IPARAM_NLP_NLOPT_ALGO                                       <- 2557L
+ LS_DPARAM_NLP_ENLAMBDA                                       <- 2558L
+ LS_IPARAM_NLP_QP_REFINING                                       <- 2559L
 
     # Mixed integer programming (MIP) parameters (5000 - 5+++) #/
  LS_IPARAM_MIP_TIMLIM                                         <- 5300L
@@ -458,6 +466,21 @@
  LS_IPARAM_MIP_USE_INT_ZERO_TOL                               <- 5353L
  LS_IPARAM_MIP_USE_CUTS_HEU                                   <- 5354L
  LS_DPARAM_MIP_BIGM_FOR_INTTOL                                <- 5355L
+ LS_IPARAM_MIP_PBE_HEU                                       <- 5356L
+ LS_IPARAM_MIP_PBE_VARLIM                                       <- 5357L
+ LS_IPARAM_MIP_PBE_MAXPASSES                                       <- 5358L
+ LS_DPARAM_MIP_PBE_COEFCAP                                       <- 5359L
+ LS_DPARAM_MIP_PBE_RATTOL                                       <- 5360L
+ LS_IPARAM_MIP_PBE_NODELIM                                       <- 5361L
+ LS_IPARAM_MIP_PBE_PROJECT                                       <- 5362L
+ LS_IPARAM_MIP_PBE_SELECT                                       <- 5363L
+ LS_IPARAM_MIP_PBE_DAMP_ROUNDS                                       <- 5364L
+ LS_DPARAM_MIP_PBE_DAMP_PCT                                       <- 5365L
+ LS_IPARAM_MIP_PBE_PRINT                                       <- 5424L
+ LS_IPARAM_MIP_PBE_OBJCUT                                       <- 5425L
+ LS_IPARAM_MIP_OCTANE_HEU                                       <- 5426L
+ LS_IPARAM_MIP_OCTANE_FMAX                                       <- 5427L
+ LS_IPARAM_MIP_OCTANE_RAYS                                       <- 5428L
  LS_IPARAM_MIP_STRONGBRANCHDONUM                              <- 5366L
  LS_IPARAM_MIP_MAKECUT_INACTIVE_COUNT                         <- 5367L
  LS_IPARAM_MIP_PRE_ELIM_FILL                                  <- 5368L
@@ -728,6 +751,7 @@
  LS_IPARAM_SAMP_NCM_ITERLIM                                   <- 7706L
     #! Optimality tolerance for NCM method #/
  LS_DPARAM_SAMP_NCM_OPTTOL                                    <- 7707L
+ LS_DPARAM_SAMP_CDSMAX                                       <- 7708L
     #! Number of parallel threads #/
  LS_IPARAM_SAMP_NUM_THREADS                                   <- 7708L
     #! Buffer size for random number generators #/
@@ -1157,6 +1181,7 @@
  LS_SINFO_MODEL_TYPE                                          <- 11242L
  LS_IINFO_NLP_LINEARITY                                       <- 11243L
  LS_DINFO_ALL_ITER                                            <- 11244L
+ LS_DINFO_TIME_TO_BESTSOL                                       <- 11245L
 
  # MIP and MINLP related info (11300-11400) #/
  LS_IINFO_MIP_STATUS                                          <- 11300L
@@ -1223,8 +1248,10 @@
  LS_IINFO_MIP_SOFTKNAP_CUTS                                   <- 11371L
  LS_IINFO_MIP_LP_ROUND_CUTS                                   <- 11372L
  LS_IINFO_MIP_PERSPECTIVE_CUTS                                <- 11373L
+ LS_IINFO_MIP_PATHMIR_CUTS                                    <- 11377L
  LS_IINFO_MIP_STRATEGY_MASK                                   <- 11374L
  LS_DINFO_MIP_ALL_ITER                                        <- 11375L
+ LS_DINFO_MIP_TIME_TO_BESTSOL                                       <- 11376L
 
  # GOP related info (11601-11699) #/
  LS_DINFO_GOP_OBJ                                             <- 11600L
@@ -2054,6 +2081,7 @@
  LS_METHOD_SPRINT                                             <- 11L
  LS_METHOD_GA                                                 <- 12L
  LS_METHOD_FILELP                                             <- 13L
+ LS_METHOD_PDLP                                       <- 14L
 
 
  LS_STRATEGY_USER                                             <- 0L
@@ -2069,6 +2097,8 @@
  LS_NMETHOD_SLP                                               <- 8L
  LS_NMETHOD_MSW_GRG                                           <- 9L
  LS_NMETHOD_IPOPT                                             <- 10L
+ LS_NMETHOD_NLOPT                                       <- 11L
+ LS_NMETHOD_ENOPT                                       <- 12L
  LS_NMETHOD_RESERVED                                          <- 11L
  LS_NMETHOD_RESERVED1                                         <- 12L
 
@@ -2196,6 +2226,8 @@
  LS_MIP_MODE_NO_LP_BARRIER                                    <- 32L
  LS_MIP_MODE_NO_LSLVDP                                        <- 64L
  LS_MIP_MODE_SOS2_GRAY                                        <- 128L
+ LS_MIP_MODE_INSMIPSOL                                       <- 256L
+ LS_MIP_MODE_INSMIPBND                                       <- 512L
 
 
  # Bit mask for cut generation levels. Use sums to
@@ -2217,6 +2249,8 @@
  LS_MIP_DISJUN_CUTS                                           <- 16384L
  LS_MIP_SOFT_KNAP_CUTS                                        <- 32768L
  LS_MIP_LP_ROUND_CUTS                                         <- 65536L
+ LS_MIP_PATHMIR_CUTS                                          <- 131072L
+ LS_MIP_PATHMIR_MIX_CUTS                                      <- 262144L
 
 
  # Bit masks for MIP preprocessing levels. Use sums
@@ -2233,6 +2267,7 @@
  LS_MIP_PREP_COEF_LIFTING                                     <- 512L
  LS_MIP_PREP_MAXPASS                                          <- 1024L
  LS_MIP_PREP_SIMROW                                           <- 2048L
+ LS_MIP_PREP_EXTERNAL                                       <- 16384L
 
 
  # Bit masks for solver preprocessing levels. Use sums
@@ -2245,7 +2280,10 @@
  LS_SOLVER_PREP_DCOL                                          <- 32L
  LS_SOLVER_PREP_DROW                                          <- 64L
  LS_SOLVER_PREP_CONE                                          <- 128L
+ LS_SOLVER_PREP_FLIPGE                                       <- 256L
+ LS_SOLVER_PREP_RES512                                       <- 512L
  LS_SOLVER_PREP_MAXPASS                                       <- 1024L
+ LS_SOLVER_PREP_RES2048                                       <- 2048L
  LS_SOLVER_PREP_DECOMP                                        <- 4096L
  LS_SOLVER_PREP_LOWMEM                                        <- 8192L
  LS_SOLVER_PREP_EXTERNAL                                      <- 16384L
@@ -2481,6 +2519,14 @@
  LS_MSW_MODE_PRECOLLECT                                       <- 128L
  LS_MSW_MODE_POWER_SOLVE                                      <- 256L
  LS_MSW_MODE_SHARE_STACK                                      <- 512L
+ LS_MSW_MODE_ENTROPY_POX                                       <- 1024L
+ LS_MSW_MODE_MERIT_POX                                       <- 2048L
+ LS_MSW_MODE_BOUND_PROP                                       <- 4096L
+ LS_MSW_MODE_FEAS_RANK                                       <- 8192L
+ LS_MSW_MODE_CONS_CONSENSUS                                       <- 16384L
+ LS_MSW_MODE_QMC_SAMPLE                                       <- 32768L
+ LS_MSW_MODE_MLSL_FILTER                                       <- 65536L
+ LS_MSW_MODE_AUTO                                       <- 131072L
 
 
  LS_GA_CROSS_SBX                                              <- 101L
@@ -2513,6 +2559,7 @@
  LS_SOLVER_MODE_ADD_PM1_SQR                                   <- 512L
    #! add PM1 restrictions abs#/
  LS_SOLVER_MODE_ADD_PM1_ABS                                   <- 1024L
+ LS_SOLVER_MODE_GREY_AGGR                                       <- 2048L
 
 
  LS_PARCLASS_BITMASK                                          <- 1L
