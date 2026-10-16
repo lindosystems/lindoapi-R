@@ -164,6 +164,8 @@
  LS_XSOLVER_HIGHSLP                                           <- 16L
  LS_XSOLVER_COPT                                              <- 17L
  LS_XSOLVER_COPTLP                                            <- 18L
+ LS_XSOLVER_XPRLP                                             <- 19L
+ LS_XSOLVER_NLOPT                                             <- 20L
  LS_XSOLVER_MYUSER                                            <- 94L
  LS_XSOLVER_TABOX                                             <- 95L
  LS_XSOLVER_MUMPS                                             <- 96L
@@ -1051,6 +1053,9 @@
  EP_POWERUTILITY                                              <- 1190L
  EP_POLYNOMIAL                                                <- 1191L
  EP_CENSOR                                                    <- 1192L
+ EP_ENTROPY                                                   <- 1193L
+ EP_XLOGIT                                                    <- 1194L
+ EP_IRR                                                       <- 1195L
 
 
  # Model and solution information codes ( 110xx-140xx) #/
@@ -2065,6 +2070,7 @@
  LSLOC_SP_BENCH_END                                           <- 25L
  LSLOC_BNP                                                    <- 26L
  LSLOC_OBJPOOL                                                <- 27L
+ LSLOC_MIP_SETS                                               <- 28L
 
 
  LS_METHOD_FREE                                               <- 0L
@@ -2574,6 +2580,85 @@
  LS_PARCLASS_MOD                                              <- 2048L
  LS_PARCLASS_HIT                                              <- 4096L
  LS_PARCLASS_ZSTATIC                                          <- 8192L
+ LS_IINFO_OBJSENSE                                            <- 1022L
+ LS_IINFO_VER_MAJOR                                           <- 990L
+ LS_IINFO_VER_MINOR                                           <- 991L
+ LS_IINFO_VER_BUILD                                           <- 992L
+ LS_IINFO_VER_REVISION                                        <- 993L
+ LS_CONIC                                                     <- 12L
+ LS_MICONIC                                                   <- 17L
+ LS_INT_PARAMETER_TYPE                                        <- 4L
+ LS_DOUBLE_PARAMETER_TYPE                                     <- 8L
+ LS_IPARAM_NLP_MSW_MAXREF                                     <- 2534L
+ LS_IPARAM_STOC_DEBUG_LEVEL                                   <- 6619L
+ LS_SPRINT_OUTPUT_FILE_DEFAULT                                <- 0L
+ LS_IPARAM_SPLEX_SCALE                                        <- 4029L
+ LS_IPARAM_SPLEX_ITRLMT                                       <- 4030L
+ LS_IPARAM_MIP_USE_ENUM_HEU                                   <- 5350L
+ LS_IPARAM_SOLVER_USE_CONCURRENT_OPT                          <- 1261L
+ LS_IPARAM_GOP_USEBNDLIM                                      <- 6417L
+ LSLOC_BANDB                                                  <- 5L
+ LS_IPARAM_ITRLMT                                             <- 4030L
+ LS_IPARAM_PRICING                                            <- 4031L
+ LS_IPARAM_SCALE                                              <- 4029L
+ LS_IPARAM_TIMLMT                                             <- 1252L
+ LS_DPARAM_CUTOFFVAL                                          <- 1253L
+ LS_IPARAM_RESTART                                            <- 1255L
+ LS_DPARAM_FEASTOL                                            <- 1254L
+ LS_IPARAM_IUSOL                                              <- 1251L
+ LS_IPARAM_MIPTIMLIM                                          <- 5300L
+ LS_IPARAM_MIPAOPTTIMLIM                                      <- 5301L
+ LS_IPARAM_MIPPRELEVEL                                        <- 5303L
+ LS_IPARAM_MIPNODESELRULE                                     <- 5304L
+ LS_DPARAM_MIPINTTOL                                          <- 5305L
+ LS_DPARAM_MIPRELINTTOL                                       <- 5306L
+ LS_DPARAM_MIP_OPTTOL                                         <- 5307L
+ LS_DPARAM_MIPOPTTOL                                          <- 5307L
+ LS_DPARAM_MIPPEROPTTOL                                       <- 5308L
+ LS_IPARAM_MIPMAXCUTPASS                                      <- 5309L
+ LS_DPARAM_MIPADDCUTPER                                       <- 5311L
+ LS_IPARAM_MIPCUTLEVEL                                        <- 5314L
+ LS_IPARAM_MIPHEULEVEL                                        <- 5319L
+ LS_IPARAM_MIPPRINTLEVEL                                      <- 5320L
+ LS_IPARAM_MIPPREPRINTLEVEL                                   <- 5321L
+ LS_DPARAM_MIPCUTOFFOBJ                                       <- 5322L
+ LS_IPARAM_MIPSTRONGBRANCHLEVEL                               <- 5324L
+ LS_IPARAM_MIPBRANCHDIR                                       <- 5326L
+ LS_IPARAM_MIPTOPOPT                                          <- 5327L
+ LS_IPARAM_MIPREOPT                                           <- 5328L
+ LS_IPARAM_MIPSOLVERTYPE                                      <- 5329L
+ LS_IPARAM_MIPKEEPINMEM                                       <- 5330L
+ LS_DPARAM_MIP_REDCOSTFIXING_CUTOFF                           <- 5332L
+ LS_IPARAM_NLPPRINTLEVEL                                      <- 2503L
+ LS_IPARAM_LPPRINTLEVEL                                       <- 4035L
+ LS_IPARAM_NLPSOLVER                                          <- 2501L
+ LS_IPARAM_MODEL_CONVEX_FLAG                                  <- 2522L
+ LS_IPARAM_NLP_SOLVEASLP                                      <- 2500L
+ LS_DINFO_MIPBESTBOUND                                        <- 11302L
+ LS_IINFO_MIPBRANCHCOUNT                                      <- 11306L
+ LS_IINFO_MIPSTATUS                                           <- 11300L
+ LS_IINFO_MIPNEWIPSOL                                         <- 11307L
+ LS_IINFO_MIPLPCOUNT                                          <- 11308L
+ LS_IINFO_MIPACTIVENODES                                      <- 11309L
+ LS_IINFO_MIPLTYPE                                            <- 11310L
+ LS_IINFO_MIPAOPTTIMETOSTOP                                   <- 11311L
+ LS_DINFO_MIPOBJ                                              <- 11301L
+ LS_IPARAM_BARRIER_PROB_TO_SOLVE                              <- 4034L
+ LS_IINFO_STATUS                                              <- 11206L
+ LS_GOPSOLSTAT_GLOBAL_OPTIMAL                                 <- 1L
+ LS_GOPSOLSTAT_LOCAL_OPTIMAL                                  <- 8L
+ LS_GOPSOLSTAT_INFEASIBLE                                     <- 3L
+ LS_GOPSOLSTAT_TOPUNBOUNDED                                   <- 4L
+ LS_GOPSOLSTAT_FEASIBLE                                       <- 5L
+ LS_GOPSOLSTAT_UNKNOWN                                        <- 12L
+ LS_GOPSOLSTAT_NUMERICAL_ERROR                                <- 11L
+ LS_IIS_NORM_NONE                                             <- 0L
+ LS_IPARAM_STOC_SAMPLING_METHOD                               <- 6620L
+ LS_DPARAM_GOP_OPTTOL                                         <- 6400L
+ EP_EXT_AND                                                   <- 1060L
+ EP_EXT_OR                                                    <- 1061L
+ EP_MULTMULT                                                  <- 1076L
+ EP_PUSH_SVAR                                                 <- 1092L
 
 
 
